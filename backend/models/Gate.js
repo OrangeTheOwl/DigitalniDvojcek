@@ -5,6 +5,7 @@ const gateSchema = new mongoose.Schema(
     label: {
       type: String,
       required: true,
+      unique: true,
     },
   },
   { strict: "throw" }
