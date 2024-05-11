@@ -21,7 +21,6 @@ mongoose
     console.error("Failed to connect to MongoDB:", error);
   });
 
-
 // // Base routes
 app.get("/", (req, res) => {
   res.send("You can access the API");
