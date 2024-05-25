@@ -34,6 +34,5 @@ jobs:
         uses: joelwmale/webhook-action@master
         with:
           url: ${{ secrets.WEBHOOK_URL }}
-          x-github-event: "push"
-          body: '{"event": "push", "repository": "DigitalniDvojcek/test"}'
+          body: '{"x-github-event": "push", "event": "push", "repository": "DigitalniDvojcek/test"}'
           github_event_payload: true
