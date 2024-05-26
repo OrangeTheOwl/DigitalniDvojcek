@@ -31,6 +31,7 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/sistemske:latest
       -
         name: Webhook
+        if: success()
         uses: joelwmale/webhook-action@master
         with:
           url: ${{ secrets.WEBHOOK_URL }}
