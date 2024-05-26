@@ -32,7 +32,7 @@ jobs:
       -
         name: Webhook
         if: success()
-        uses: joelwmale/webhook-action@{SHA-1}
+        uses: joelwmale/webhook-action@master
         with:
           url: ${{ secrets.WEBHOOK_URL }}
           headers: '{"x-github-event": "push"}'
