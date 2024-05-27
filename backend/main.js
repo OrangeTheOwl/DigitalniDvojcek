@@ -15,11 +15,15 @@ const userRoute = require("./routes/user");
 const gateRoute = require("./routes/gate");
 const flightRoute = require("./routes/flight");
 const airportRoute = require("./routes/airport");
+const trafficInfoRoute = require("./routes/trafficInfo");
+const weatherConditionRoute = require("./routes/weatherCondition");
 
 app.use("/user", userRoute);
 app.use("/gate", gateRoute);
 app.use("/flight", flightRoute);
 app.use("/airport", airportRoute);
+app.use("/trafficInfo", trafficInfoRoute);
+app.use("/weatherCondition", weatherConditionRoute);
 
 // // Connect to MongoDB
 mongoose
