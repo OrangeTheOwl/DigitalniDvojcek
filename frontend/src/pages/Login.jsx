@@ -33,32 +33,32 @@ const Login = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-//   const handleLogin = async () => {
-//     if (email === "" || password === "") {
-//       setIsModalOpen(true);
-//       setErrorMessage("Prosim izpolni vsa polja");
-//       setTimeout(() => setIsModalOpen(false), 3000);
-//       return;
-//     }
-//     try {
-//       const res = await fetch("http://localhost:3210/user/login", {
-//         method: "POST",
-//         headers: {
-//           "Content-Type": "application/json",
-//         },
-//         body: JSON.stringify({ email, password }),
-//         credentials: "include",
-//       });
-//       if (res.ok) navigate("/");
-//       else {
-//         setErrorMessage("Nepravilni prijavni podatki");
-//         setIsModalOpen(true);
-//         setTimeout(() => setIsModalOpen(false), 3000);
-//       }
-//     } catch (err) {
-//       console.error(err);
-//     }
-//   };
+  const handleLogin = async () => {
+    if (email === "" || password === "") {
+      setIsModalOpen(true);
+      setErrorMessage("Prosim izpolni vsa polja");
+      setTimeout(() => setIsModalOpen(false), 3000);
+      return;
+    }
+    try {
+      const res = await fetch("http://localhost:3210/user/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+        credentials: "include",
+      });
+      if (res.ok) navigate("/");
+      else {
+        setErrorMessage("Nepravilni prijavni podatki");
+        setIsModalOpen(true);
+        setTimeout(() => setIsModalOpen(false), 3000);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   return (
     <Grid
