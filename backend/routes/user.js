@@ -1,24 +1,13 @@
 const express = require("express");
 const User = require("../models/User");
+const jwt = require("jsonwebtoken");
+const { generateJWT, checkJWT } = require("../helper-functions");
+const bcrypt = require("bcrypt");
 
 const router = express.Router();
 
-// Create a user
-router.post("/", async (req, res) => {
-  try {
-    const user = new User(req.body);
-    await user.save();
-    res.status(200).json({ msg: "User created successfully" });
-  } catch (err) {
-    console.error(`An error has occurred while creating a user: ${err}`);
-    res
-      .status(500)
-      .json({ msg: "An error has occurred while creating a user" });
-  }
-});
-
 // Get a user
-router.get("/:id", async (req, res) => {
+router.get("find/:id", async (req, res) => {
   const id = req.params.id;
   try {
     const user = await User.findById(id);
@@ -43,6 +32,75 @@ router.get("/", async (req, res) => {
     res
       .status(500)
       .json({ msg: "An error has occurred while getting all users" });
+  }
+});
+
+// Create a user
+router.post("/", async (req, res) => {
+  try {
+    const user = new User(req.body);
+    await user.save();
+    const token = generateJWT(user._id);
+    res.cookie("jwt", token, { maxAge: 259200000 });
+    res.status(200).json({ msg: "User created successfully" });
+  } catch (err) {
+    console.error(`An error has occurred while creating a user: ${err}`);
+    res
+      .status(500)
+      .json({ msg: "An error has occurred while creating a user" });
+  }
+});
+
+// Login with a user account
+router.post("/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
+
+    if (!user || !(await bcrypt.compare(password, user.password))) {
+      return res.status(401).json({ message: "Invalid email or password" });
+    }
+
+    const token = generateJWT(user._id);
+    res.cookie("jwt", token, { maxAge: 259200000 });
+    res
+      .status(200)
+      .json({ message: "You have been logged in", user: user._id });
+  } catch (err) {
+    console.error(err);
+    res
+      .status(500)
+      .json({ message: "An error has occured while trying to log you in" });
+  }
+});
+
+// Check if user is logged in
+router.get("/check", async (req, res) => {
+  try {
+    const token = req.cookies.jwt;
+    if (token) {
+      jwt.verify(token, process.env.JWT_SECRET, async (err, decodedToken) => {
+        if (!err) {
+          const user = await User.findById(decodedToken.id);
+          res.status(200).json(user);
+        }
+      });
+    } else res.status(401).json({ message: "Not logged in" });
+  } catch (err) {
+    console.error(err);
+  }
+});
+
+// Logout
+router.get("/logout", (req, res) => {
+  try {
+    res.cookie("jwt", "", { maxAge: 1 });
+    res.status(200).json({ message: "Logged out" });
+  } catch (err) {
+    console.error(err);
+    res
+      .status(500)
+      .json({ message: "An error has occured while trying to log you out" });
   }
 });
 

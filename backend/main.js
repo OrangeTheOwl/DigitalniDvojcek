@@ -1,7 +1,8 @@
 // Libraries
+require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
-require("dotenv").config();
+const cookieParser = require("cookie-parser");
 
 // Global variables
 const port = process.env.DEV_PORT;
@@ -9,6 +10,7 @@ const port = process.env.DEV_PORT;
 // Basic setup
 const app = express();
 app.use(express.json());
+app.use(cookieParser());
 
 // // Routes
 const userRoute = require("./routes/user");
