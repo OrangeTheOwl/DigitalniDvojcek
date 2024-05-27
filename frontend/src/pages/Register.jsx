@@ -35,48 +35,48 @@ const Login = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-//   const handleRegister = async () => {
-//     if (
-//       username === "" ||
-//       password === "" ||
-//       repeatPassword === "" ||
-//       email === ""
-//     ) {
-//       setErrorMessage("Prosim izpolni vsa polja");
-//       setIsModalOpen(true);
-//       setTimeout(() => setIsModalOpen(false), 3000);
-//       return;
-//     }
-//     if (password !== repeatPassword) {
-//       setErrorMessage("Gesli se ne ujemata");
-//       setIsModalOpen(true);
-//       setTimeout(() => setIsModalOpen(false), 3000);
-//       return;
-//     }
-//     if (password.length < 8) {
-//       setErrorMessage("Geslo mora vsebovati vsaj 8 znakov");
-//       setIsModalOpen(true);
-//       setTimeout(() => setIsModalOpen(false), 3000);
-//       return;
-//     }
-//     try {
-//         const res = await fetch("http://localhost:3210/user", {
-//           method: "POST",
-//           headers: {
-//             "Content-Type": "application/json",
-//           },
-//           body: JSON.stringify({ username, email, password }),
-//           credentials: "include",
-//         });
-//         if (res.ok) navigate("/");
-//         else {
-//           setIsModalOpen(true);
-//           setTimeout(() => setIsModalOpen(false), 3000);
-//         }
-//     } catch (err) {
-//       console.error(err);
-//     }
-//   };
+  const handleRegister = async () => {
+    if (
+      username === "" ||
+      password === "" ||
+      repeatPassword === "" ||
+      email === ""
+    ) {
+      setErrorMessage("Prosim izpolni vsa polja");
+      setIsModalOpen(true);
+      setTimeout(() => setIsModalOpen(false), 3000);
+      return;
+    }
+    if (password !== repeatPassword) {
+      setErrorMessage("Gesli se ne ujemata");
+      setIsModalOpen(true);
+      setTimeout(() => setIsModalOpen(false), 3000);
+      return;
+    }
+    if (password.length < 8) {
+      setErrorMessage("Geslo mora vsebovati vsaj 8 znakov");
+      setIsModalOpen(true);
+      setTimeout(() => setIsModalOpen(false), 3000);
+      return;
+    }
+    try {
+      const res = await fetch("http://localhost:3210/user", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, email, password }),
+        credentials: "include",
+      });
+      if (res.ok) navigate("/");
+      else {
+        setIsModalOpen(true);
+        setTimeout(() => setIsModalOpen(false), 3000);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   return (
     <Grid
