@@ -39,7 +39,6 @@ router.get("/", async (req, res) => {
 router.post("/", async (req, res) => {
   try {
     const user = new User(req.body);
-
     await user.save();
     const token = generateJWT(user._id);
     res.cookie("jwt", token, { maxAge: 259200000 });
