@@ -6,7 +6,8 @@ const weatherConditionSchema = new mongoose.Schema({
         required: true
     },
     location: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Location',
         required: true
     },
     temperature: {

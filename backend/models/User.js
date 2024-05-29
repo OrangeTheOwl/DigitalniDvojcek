@@ -7,6 +7,7 @@ const userSchema = new mongoose.Schema(
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     followedFlights: [{ type: mongoose.Schema.Types.ObjectId, ref: "flight" }],
+    defaultLocation: { type: mongoose.Schema.Types.ObjectId, ref: "location"}
   },
   { strict: "throw" }
 );
