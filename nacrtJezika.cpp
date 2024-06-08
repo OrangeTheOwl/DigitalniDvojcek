@@ -92,31 +92,55 @@
 
 3. BNF:
 
-    START::= Drzava NIZ { LETALISCE RESTAVRACIJA }
+    3.1 Sintaksa
 
-    RESTAVRACIJA ::= restavracija NIZ { POINTS } | Ɛ
+        START::= DRZAVA
 
-    LETALISCE ::= LETALISCE' LETALISCE | LETALISCE'
+        DRZAVA ::= DRZAVA DRZAVA' | DRZAVA'
+        
+        DRZAVA' ::= drzava NIZ { LETALISCE RESTAVRACIJA }
 
-    LETALISCE' ::= letalisce NIZ {TERMINAL PARKIRISCA}
+        RESTAVRACIJA ::= restavracija NIZ { POINTS } | Ɛ
 
-    TERMINAL ::= TERMINAL' TERMINAL | TERMINAL'
+        LETALISCE ::= LETALISCE' LETALISCE | LETALISCE'
 
-    TERMINAL' ::= terminal NIZ { UKAZ_TERMINAL }
+        LETALISCE' ::= letalisce NIZ {TERMINAL PARKIRISCA}
 
-    UKAZ_TERMINAL ::= box ( TOCKA , TOCKA, TOCKA , TOCKA )
+        TERMINAL ::= TERMINAL' TERMINAL | TERMINAL'
 
-    PARKIRISCA ::= parkirisca NIZ { POINTS } |  Ɛ
+        TERMINAL' ::= terminal NIZ { UKAZ_TERMINAL }
 
-    POINTS ::= POINTS' POINTS | POINTS'
+        UKAZ_TERMINAL ::= box ( TOCKA , TOCKA, TOCKA , TOCKA )
 
-    POINTS' ::= point TOCKA
+        PARKIRISCA ::= parkirisca NIZ { POINTS } |  Ɛ
 
-    TOCKA ::= ( NUMBER , NUMBER )
+        POINTS ::= POINTS' POINTS | POINTS'
 
-    NUMBER ::= {0,...,9}+(.{0,...,9}+)?
+        POINTS' ::= point TOCKA
 
-    NIZ ::= {A,...,Z,a,...,z}+
+        TOCKA ::= ( NUMBER , NUMBER )
+
+        NUMBER ::= {0,...,9}+(.{0,...,9}+)?
+
+        NIZ ::= {A,...,Z,a,...,z}+
+
+    3.2 Terminalni simboli
+
+        number = {0,...,9}+(.{0,...,9}+)?
+        niz = {A,...,Z,a,...,z}+
+        begin = {
+        end = }
+        vejica = ,
+        lparent = (
+        rparent = )
+        Drzava = drzava
+        Restavracija = restavracija
+        Letalisce = letalisce
+        Terminal = terminal
+        Point = point
+        Box = box
+        skip = {\t,  \n, \r, " "}
+
 
 
 4. Primeri
