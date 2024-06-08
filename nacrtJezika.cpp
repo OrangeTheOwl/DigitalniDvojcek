@@ -137,6 +137,7 @@
         Restavracija = restavracija
         Letalisce = letalisce
         Terminal = terminal
+        Parkirisca = parkirisca
         Point = point
         Box = box
         skip = {\t,  \n, \r, " "}
