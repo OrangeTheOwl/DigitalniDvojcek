@@ -96,17 +96,17 @@
 
         START::= DRZAVA
 
-        DRZAVA ::= DRZAVA DRZAVA' | DRZAVA'
+        DRZAVA ::= DRZAVA' DRZAVA | Ɛ
         
         DRZAVA' ::= drzava NIZ { LETALISCE RESTAVRACIJA }
 
         RESTAVRACIJA ::= restavracija NIZ { POINTS } | Ɛ
 
-        LETALISCE ::= LETALISCE' LETALISCE | LETALISCE'
+        LETALISCE ::= LETALISCE' LETALISCE | Ɛ
 
         LETALISCE' ::= letalisce NIZ {TERMINAL PARKIRISCA}
 
-        TERMINAL ::= TERMINAL' TERMINAL | TERMINAL'
+        TERMINAL ::= TERMINAL' TERMINAL | Ɛ
 
         TERMINAL' ::= terminal NIZ { UKAZ_TERMINAL }
 
@@ -114,7 +114,7 @@
 
         PARKIRISCA ::= parkirisca NIZ { POINTS } |  Ɛ
 
-        POINTS ::= POINTS' POINTS | POINTS'
+        POINTS ::= POINTS' POINTS | Ɛ
 
         POINTS' ::= point TOCKA
 
