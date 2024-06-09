@@ -21,6 +21,8 @@ dependencies {
     // With compose.desktop.common you will also lose @Preview functionality
     implementation(compose.desktop.currentOs)
     implementation("it.skrape:skrapeit:1.1.5")
+    implementation("org.seleniumhq.selenium:selenium-java:3.141.59")
+    implementation("org.seleniumhq.selenium:selenium-chrome-driver:3.141.59")
 }
 
 compose.desktop {
