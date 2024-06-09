@@ -28,6 +28,7 @@ const TrafficInfo = () => {
       `http://localhost:3210/trafficInfo/location/${locationId}`
     );
     const data = await response.json();
+    console.log(data);
     setTrafficInfos(data);
   };
 
@@ -46,10 +47,15 @@ const TrafficInfo = () => {
         console.log(data);
         setUserId(data._id);
         setUsername(data.username);
-        setLocationDisplay(
-          `${data.defaultLocation.city}, ${data.defaultLocation.address}`
-        );
-        await fetchTrafficInfos(data.defaultLocation._id);
+
+        if (data.defaultLocation) {
+          await fetchTrafficInfos(data.defaultLocation._id);
+          setLocationDisplay(
+            `${data.defaultLocation.city}, ${data.defaultLocation.address}`
+          );
+        } else {
+          await fetchTrafficInfos(undefined);
+        }
       }
     } catch (err) {
       console.error(err);
@@ -108,6 +114,9 @@ const TrafficInfo = () => {
                 </Typography>
                 <Typography variant="h6">
                   Status: {trafficInfo.status}
+                </Typography>
+                <Typography variant="h6">
+                  Zamuda: {trafficInfo.delay} minut
                 </Typography>
               </CardContent>
             </Card>

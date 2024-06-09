@@ -76,6 +76,9 @@ async function getTrafficInfo(req, res, next) {
 
 // Get traffic info by location ID
 router.get("/location/:locationId", async (req, res) => {
+  if (req.params.locationId === "undefined") {
+    return res.json(await TrafficInfo.find().populate("location"));
+  }
   try {
     const locationId = req.params.locationId;
     const trafficInfo = await TrafficInfo.find({

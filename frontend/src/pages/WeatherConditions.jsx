@@ -37,10 +37,16 @@ const WeatherConditions = () => {
         const data = await res.json();
         setUserId(data._id);
         setUsername(data.username);
-        setLocationDisplay(
-          `${data.defaultLocation.city}, ${data.defaultLocation.address}`
-        );
-        await fetchWeatherConditions(data.defaultLocation._id);
+        if (data.defaultLocation) {
+          console.log(data);
+          setLocationDisplay(
+            `${data.defaultLocation.city}, ${data.defaultLocation.address}`
+          );
+          await fetchWeatherConditions(data.defaultLocation._id);
+        } else {
+          console.log("No default location");
+          await fetchWeatherConditions(undefined);
+        }
       }
     } catch (err) {
       console.error(err);

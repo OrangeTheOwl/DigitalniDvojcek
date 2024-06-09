@@ -19,6 +19,7 @@ const userRoute = require("./routes/user");
 const gateRoute = require("./routes/gate");
 const flightRoute = require("./routes/flight");
 const airportRoute = require("./routes/airport");
+const locationRoute = require("./routes/location");
 const trafficInfoRoute = require("./routes/trafficInfo");
 const weatherConditionRoute = require("./routes/weatherCondition");
 
@@ -26,6 +27,7 @@ app.use("/user", userRoute);
 app.use("/gate", gateRoute);
 app.use("/flight", flightRoute);
 app.use("/airport", airportRoute);
+app.use("/location", locationRoute);
 app.use("/trafficInfo", trafficInfoRoute);
 app.use("/weatherCondition", weatherConditionRoute);
 

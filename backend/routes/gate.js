@@ -46,4 +46,20 @@ router.get("/", async (req, res) => {
     }
 });
 
+// Get id from label
+router.get("/label/:label", async (req, res) => {
+    const label = req.params.label;
+    try {
+        const gate = await Gate.findOne({ label: label });
+        if (gate) {
+            res.status(200).json(gate._id);
+        } else {
+            res.status(404).json({ msg: "Gate not found" });
+        }
+    } catch (err) {
+        console.error(`An error has occurred while getting a gate: ${err}`);
+        res.status(500).json({ msg: "An error has occurred while getting a gate" });
+    }
+});
+
 module.exports = router;

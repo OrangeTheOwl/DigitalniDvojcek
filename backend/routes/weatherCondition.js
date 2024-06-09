@@ -81,6 +81,10 @@ async function getWeatherCondition(req, res, next) {
 // Get weather conditions by location ID
 router.get("/location/:id", async (req, res) => {
   try {
+    if (req.params.id === "undefined") {
+      console.log("undefined");
+      return res.json(await WeatherCondition.find().populate("location"));
+    }
     const locationId = req.params.id;
     let weatherConditions = await WeatherCondition.find({
       location: locationId,
