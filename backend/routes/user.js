@@ -81,7 +81,9 @@ router.get("/check", async (req, res) => {
     if (token) {
       jwt.verify(token, process.env.JWT_SECRET, async (err, decodedToken) => {
         if (!err) {
-          const user = await User.findById(decodedToken.id);
+          const user = await User.findById(decodedToken.id).populate(
+            "defaultLocation"
+          );
           res.status(200).json(user);
         }
       });
@@ -101,6 +103,34 @@ router.get("/logout", (req, res) => {
     res
       .status(500)
       .json({ message: "An error has occured while trying to log you out" });
+  }
+});
+
+// Change default location
+router.post("/changeDefaultLocation", async (req, res) => {
+  try {
+    const { userId, location } = req.body;
+    const user = await User.findById(userId);
+    if (user) {
+      user.defaultLocation = location;
+      await user.save();
+      res.status(200).json({ message: "Default location changed" });
+    } else {
+      res.status(404).json({ message: "User not found" });
+    }
+  } catch (err) {
+    if (
+      err.message ===
+      `Cast to ObjectId failed for value "" (type string) at path "_id" for model "user"`
+    ) {
+      return res.status(200);
+    }
+    console.error(
+      `An error has occurred while changing default location: ${err}`
+    );
+    res.status(500).json({
+      message: "An error has occurred while changing default location",
+    });
   }
 });
 
