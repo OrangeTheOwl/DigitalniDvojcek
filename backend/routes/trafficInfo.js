@@ -6,7 +6,12 @@ const router = express.Router();
 // Get all traffic info
 router.get("/", async (req, res) => {
   try {
-    const trafficInfo = await TrafficInfo.find();
+    let trafficInfo = await TrafficInfo.find();
+    trafficInfo = await Promise.all(
+      trafficInfo.map(async (trafficInfo) => {
+        return await TrafficInfo.populate(trafficInfo, { path: "location" });
+      })
+    );
     res.json(trafficInfo);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -68,5 +73,18 @@ async function getTrafficInfo(req, res, next) {
   res.trafficInfo = trafficInfo;
   next();
 }
+
+// Get traffic info by location ID
+router.get("/location/:locationId", async (req, res) => {
+  try {
+    const locationId = req.params.locationId;
+    const trafficInfo = await TrafficInfo.find({
+      location: locationId,
+    }).populate("location");
+    res.json(trafficInfo);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
 
 module.exports = router;
