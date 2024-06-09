@@ -140,7 +140,7 @@
         Parkirisca = parkirisca
         Point = point
         Box = box
-        skip = {\t,  \n, \r, " "}
+        skip = {\t,  \n, " "}
 
 
 
