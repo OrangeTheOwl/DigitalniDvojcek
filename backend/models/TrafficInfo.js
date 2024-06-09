@@ -7,7 +7,7 @@ const trafficInfoSchema = new mongoose.Schema({
   },
   location: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Location",
+    ref: "location",
     required: true,
   },
   delay: {
