@@ -36,11 +36,9 @@ class FlightService {
                                 "js-tab.arrivals.hidden"
                             }
 
-
                             div {
                                 withClass = "quick-flights-item.js-search-row"
                                 findAll {
-                                    /*println("Found ${this.size} divs")*/
                                     forEach {
 
                                         stringData = ArrayList()
@@ -51,7 +49,7 @@ class FlightService {
                                                         data.img {
                                                             withClass = "carrier-logo"
                                                             findFirst{
-                                                                var altValue = this.attribute("alt") // get the value of the "alt" attribute
+                                                                var altValue = this.attribute("alt")
                                                                 if(altValue.isBlank()){
                                                                     altValue = "Ni podatka"
                                                                 }
@@ -71,12 +69,6 @@ class FlightService {
                                         var timeExact : String = stringData[2]
                                         val gate : String = stringData[5]
                                         var status : String = stringData[7]
-
-                                        /*println("FLIGHT DATA:")
-                                        stringData.forEach{
-                                            println(it)
-                                        }
-                                        println("END OF FLIGHT DATA:")*/
 
                                         if (timeExact.isEmpty()) {
                                             timeExact = timePlanned
