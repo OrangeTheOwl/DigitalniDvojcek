@@ -83,11 +83,11 @@ private:
             automata[4][i] = 4;
 
             automata[11][i] = automata[12][i] = automata[13][i] = automata[14][i] =
-            automata[15][i] = automata[16][i] = automata[17][i] = automata[18][i] = 
-            automata[19][i] = automata[20][i] = automata[21][i] = automata[22][i] = 
-            automata[23][i] = automata[24][i] = automata[25][i] = automata[26][i] = 
-            automata[27][i] = automata[28][i] = automata[29][i] = automata[30][i] = 
-            automata[31][i] = automata[32][i] = 4;
+                automata[15][i] = automata[16][i] = automata[17][i] = automata[18][i] =
+                automata[19][i] = automata[20][i] = automata[21][i] = automata[22][i] =
+                automata[23][i] = automata[24][i] = automata[25][i] = automata[26][i] =
+                automata[27][i] = automata[28][i] = automata[29][i] = automata[30][i] =
+                automata[31][i] = automata[32][i] = 4;
         }
 
 
@@ -100,11 +100,11 @@ private:
             automata[0][i] = automata[4][i] = 4;
 
             automata[11][i] = automata[12][i] = automata[13][i] = automata[14][i] =
-            automata[15][i] = automata[16][i] = automata[17][i] = automata[18][i] = 
-            automata[19][i] = automata[20][i] = automata[21][i] = automata[22][i] = 
-            automata[23][i] = automata[24][i] = automata[25][i] = automata[26][i] = 
-            automata[27][i] = automata[28][i] = automata[29][i] = automata[30][i] = 
-            automata[31][i] = automata[32][i] = 4;
+                automata[15][i] = automata[16][i] = automata[17][i] = automata[18][i] =
+                automata[19][i] = automata[20][i] = automata[21][i] = automata[22][i] =
+                automata[23][i] = automata[24][i] = automata[25][i] = automata[26][i] =
+                automata[27][i] = automata[28][i] = automata[29][i] = automata[30][i] =
+                automata[31][i] = automata[32][i] = 4;
 
         }
         for (int i = 'A'; i <= 'Z'; i++)
@@ -112,11 +112,11 @@ private:
             automata[0][i] = automata[4][i] = 4;
 
             automata[11][i] = automata[12][i] = automata[13][i] = automata[14][i] =
-            automata[15][i] = automata[16][i] = automata[17][i] = automata[18][i] = 
-            automata[19][i] = automata[20][i] = automata[21][i] = automata[22][i] = 
-            automata[23][i] = automata[24][i] = automata[25][i] = automata[26][i] = 
-            automata[27][i] = automata[28][i] = automata[29][i] = automata[30][i] = 
-            automata[31][i] = automata[32][i] = 4;
+                automata[15][i] = automata[16][i] = automata[17][i] = automata[18][i] =
+                automata[19][i] = automata[20][i] = automata[21][i] = automata[22][i] =
+                automata[23][i] = automata[24][i] = automata[25][i] = automata[26][i] =
+                automata[27][i] = automata[28][i] = automata[29][i] = automata[30][i] =
+                automata[31][i] = automata[32][i] = 4;
         }
 
         // ,, (, ), {, }, \n, \t, ' '
@@ -125,8 +125,8 @@ private:
         automata[0]['('] = 7;
         automata[0][')'] = 8;
         automata[0][','] = 9;
-        automata[0]['\n'] = automata[0][' '] = automata[0]['\t'] = 10;
-        automata[10]['\n'] = automata[10][' '] = automata[10]['\t'] = 10;
+        automata[0]['\n'] = automata[0][' '] = automata[0]['\t'] = automata[0]['\r'] = 10;
+        automata[10]['\n'] = automata[10][' '] = automata[10]['\t'] = automata[10]['\r'] = 10;
 
 
         //drz , res , let, ter, par, point, box
@@ -221,14 +221,15 @@ protected:
     Token nextTokenImp()
     {
         int currentState = startState;
-        string lexem = "";
+        string lexem;
         int startColumn = column;
         int startRow = row;
-        int temp = 1;
+        int temp = 0;
         do
         {
             int tempState = getNextState(currentState, peek());
-            //cout << "test: " << tempState;
+            //cout << peek() << endl;
+            ////cout << "test: " << tempState;
             if (tempState != noEdge)
             {
                 /*if (tempState == tSeperator)
@@ -237,14 +238,21 @@ protected:
                 }*/
                 currentState = tempState;
                 lexem += (char)read();
-                //cout << "lexem: " << lexem<< endl;
+                ////cout << "lexem: " << lexem<< endl;
                 temp = tempState;
 
                 //check if state is finite? and if yes return lexem? or output lexxem and go to next token
             }
             else
             {
-                return Token(lexem, startColumn, startRow, temp, eof());
+                if (eof() && lexem == "")
+                {
+                    return Token(lexem, startColumn, startRow, temp, true);
+                }
+                else
+                {
+                    return Token(lexem, startColumn, startRow, temp, false);
+                }
             }
 
         } while (true);
@@ -279,7 +287,14 @@ public:
     }
     Token nextToken()
     {
-        return lastToken = nextTokenImp();
+        do
+        {
+            lastToken = nextTokenImp();
+
+        } while (lastToken.getToken() == 10);
+
+        cout << lastToken << endl;
+        return lastToken;
     }
     Token currentToken()
     {
@@ -287,6 +302,353 @@ public:
     }
 };
 
+
+
+class Parser
+{
+private:
+    Scanner lexem;
+
+public:
+    Parser(Scanner tLexem) : lexem(tLexem)
+    {
+        lexem.nextToken();
+    }
+
+    bool isReal() {
+        if (lexem.currentToken().getToken() == 1 || lexem.currentToken().getToken() == 3)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    bool isVariable() {
+        if (lexem.currentToken().getToken() == 4 || lexem.currentToken().getToken() == 11 || lexem.currentToken().getToken() == 12 || lexem.currentToken().getToken() == 14 || lexem.currentToken().getToken() == 15 || lexem.currentToken().getToken() == 17 || lexem.currentToken().getToken() == 18 || lexem.currentToken().getToken() == 20 || lexem.currentToken().getToken() == 21 || lexem.currentToken().getToken() == 23 || lexem.currentToken().getToken() == 24 || lexem.currentToken().getToken() == 26 || lexem.currentToken().getToken() == 27 || lexem.currentToken().getToken() == 28 || lexem.currentToken().getToken() == 30 || lexem.currentToken().getToken() == 31)
+        {
+            return true;
+        }
+        else
+        {
+            cout << lexem.currentToken();
+            return false;
+        }
+    }
+
+
+
+    bool parse()
+    {
+
+        return  drzava() && lexem.currentToken().isEof() /*&& lexem.currentToken().getToken() != 12*/;
+    }
+
+    bool drzava() {
+
+        if (drzavaS())
+        {
+            if (lexem.currentToken().isEof())
+            {
+                return true;
+            }
+            else {
+                drzava();
+            }
+
+        }
+        else return false;
+    }
+
+
+
+
+
+
+
+    bool drzavaS() {
+
+        //drzava
+        if (lexem.currentToken().getToken() == 13) {
+            lexem.nextToken();
+
+            //naziv drzave
+            if (niz())
+            {
+                //begin
+                if (lexem.currentToken().getToken() == 5)
+                {
+                    lexem.nextToken();
+
+                    //letalisca in restavracije
+                    if (letalisce() && restavracija())
+                    {
+                        //end
+                        if (lexem.currentToken().getToken() == 6)
+                        {
+                            lexem.nextToken();
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        cout << "01";
+        return false;
+    }
+
+    bool niz() {
+        if (isVariable())
+        {
+            lexem.nextToken();
+            return true;
+        }
+        cout << "02";
+        return false;
+    }
+
+    bool letalisce() {
+
+        if (letalisceS())
+        {
+            if (lexem.currentToken().getToken() != 19 /*letalisce*/)
+            {
+                return true;
+            }
+            else {
+                letalisce();
+            }
+
+        }
+        else return false;
+    }
+
+    bool letalisceS() {
+        if (lexem.currentToken().getToken() == 19 /*letalisce*/)
+        {
+            lexem.nextToken();
+
+            if (niz())
+            {
+                //begin
+                if (lexem.currentToken().getToken() == 5)
+                {
+                    lexem.nextToken();
+
+                    //terminal in parkirisca
+                    if (terminal() && parkirisca())
+                    {
+                        //end
+                        if (lexem.currentToken().getToken() == 6)
+                        {
+                            lexem.nextToken();
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        cout << "03";
+        return false;
+    }
+
+    bool restavracija() {
+        if (lexem.currentToken().getToken() == 16 /*restavracija*/)
+        {
+            lexem.nextToken();
+
+            //begin
+            if (lexem.currentToken().getToken() == 5)
+            {
+                lexem.nextToken();
+
+                //points
+                if (points())
+                {
+                    //end
+                    if (lexem.currentToken().getToken() == 6)
+                    {
+                        lexem.nextToken();
+                        return true;
+                    }
+                }
+            }
+        }
+        else return true;
+    }
+
+    bool terminal() {
+
+        if (terminalS())
+        {
+            if (lexem.currentToken().getToken() != 22 /*terminal*/)
+            {
+                return true;
+            }
+            else {
+                terminal();
+            }
+
+        }
+        else return false;
+    }
+
+    bool terminalS() {
+        if (lexem.currentToken().getToken() == 22 /*terminal*/)
+        {
+            lexem.nextToken();
+
+            if (niz())
+            {
+                //begin
+                if (lexem.currentToken().getToken() == 5)
+                {
+                    lexem.nextToken();
+
+                    //ukazi terminala
+                    if (ukaz_terminal())
+                    {
+                        //end
+                        if (lexem.currentToken().getToken() == 6)
+                        {
+                            lexem.nextToken();
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        cout << "04";
+        return false;
+    }
+
+    bool parkirisca() {
+        //parkirisca
+        if (lexem.currentToken().getToken() == 25)
+        {
+            lexem.nextToken();
+
+            if (niz())
+            {
+                //begin
+                if (lexem.currentToken().getToken() == 5)
+                {
+                    lexem.nextToken();
+
+                    //points
+                    if (points())
+                    {
+                        //end
+                        if (lexem.currentToken().getToken() == 6)
+                        {
+                            lexem.nextToken();
+                            return true;
+                        }
+                    }
+                }
+            }
+
+
+        }
+        else return true;
+
+    }
+
+    bool ukaz_terminal() {
+        //box
+        if (lexem.currentToken().getToken() == 32)
+        {
+            lexem.nextToken();
+
+            if (lexem.currentToken().getToken() == 7 /*lParanet*/)
+            {
+                lexem.nextToken();
+
+                if (tocka() && tocka() && tocka() && tocka())
+                {
+                    if (lexem.currentToken().getToken() == 8 /*rParanet*/)
+                    {
+                        lexem.nextToken();
+                        return true;
+                    }
+                }
+            }
+        }
+        cout << "05";
+        return false;
+    }
+
+    bool points() {
+
+        if (pointsS())
+        {
+            if (lexem.currentToken().getToken() != 29 /*point*/)
+            {
+                return true;
+            }
+            else {
+                points();
+            }
+
+        }
+        else return false;
+
+    }
+
+    bool pointsS() {
+        if (lexem.currentToken().getToken() == 29 /*point*/)
+        {
+            lexem.nextToken();
+            return tocka();
+        }
+        cout << "06";
+        return false;
+    }
+
+    bool tocka() {
+        if (lexem.currentToken().getToken() == 7 /*lParanet*/)
+        {
+            lexem.nextToken();
+
+            if (number())
+            {
+                if (lexem.currentToken().getToken() == 9 /*comma*/)
+                {
+                    lexem.nextToken();
+
+                    if (number())
+                    {
+                        if (lexem.currentToken().getToken() == 8 /*rParanet*/)
+                        {
+                            lexem.nextToken();
+                            return true;
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+        cout << "07";
+        return false;
+
+    }
+
+    bool number() {
+        if (isReal())
+        {
+            lexem.nextToken();
+            return true;
+        }
+        cout << "08";
+        return false;
+    }
+
+};
 
 
 
@@ -346,7 +708,7 @@ int main(int argc, char* argv[])
         m[31] = "variable";
         m[32] = "box";
 
-        
+
 
         string inputFile = argv[1];
         string outputFile = argv[2];
@@ -354,32 +716,38 @@ int main(int argc, char* argv[])
         if (file)
         {
             Scanner temp(&file);
+            //TEST LEKSIKALNEGA ANALIZATORJA
+            // Token token = temp.nextToken();
+            // string outputText = "";
+            // while (!token.isEof())
+            // {
+            //     if (m[temp.currentToken().getToken()] != "skip")
+            //     {
+            //         outputText = outputText + m[temp.currentToken().getToken()] + "(\"" + temp.currentToken().getLexem() + "\") ";
+            //         //cout << m[temp.currentToken().getToken()] << "(" << temp.currentToken().getLexem() << ") " << endl;
+            //     }
+            //     //cout << temp.currentToken();
+            //     //cout << temp.currentToken() << endl;
+            //     token = temp.nextToken();
+            // }
+            // if (m[temp.currentToken().getToken()] != "skip")
+            // {
+            //     outputText = outputText + m[temp.currentToken().getToken()] + "(\"" + temp.currentToken().getLexem() + "\") ";
+            //     //cout << m[temp.currentToken().getToken()] << "(" << temp.currentToken().getLexem() << ") " << endl;
+            // }
 
-            Token token = temp.nextToken();
-
+            Parser test(temp);
 
             string outputText = "";
-
-            while (!token.isEof())
+            if (test.parse())
             {
-                if (m[temp.currentToken().getToken()] != "skip")
-                {
-                    outputText = outputText + m[temp.currentToken().getToken()] + "(\"" + temp.currentToken().getLexem() + "\") ";
-                    //cout << m[temp.currentToken().getToken()] << "(" << temp.currentToken().getLexem() << ") " << endl;
-
-                }
-
-
-                //cout << temp.currentToken();
-
-                //cout << temp.currentToken() << endl;
-                token = temp.nextToken();
+                outputText = "accept";
+                cout << "true";
             }
-            if (m[temp.currentToken().getToken()] != "skip")
+            else
             {
-                outputText = outputText + m[temp.currentToken().getToken()] + "(\"" + temp.currentToken().getLexem() + "\") ";
-                //cout << m[temp.currentToken().getToken()] << "(" << temp.currentToken().getLexem() << ") " << endl;
-
+                cout << "false";
+                outputText = "reject";
             }
 
             ofstream output(outputFile);
@@ -387,7 +755,7 @@ int main(int argc, char* argv[])
             {
                 output << outputText;
 
-            output.close();
+                output.close();
             }
             file.close();
         }
