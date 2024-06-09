@@ -2,15 +2,15 @@
 
 1. Osnova
 
-    Želimo, da je naš jezik sposoben zajeti letališča v državi, ter znotraj letališča vse njegove terminale "gates".
+    Želimo, da je naš jezik sposoben zajeti letališča v državi, ter znotraj letališča vse njegove terminale gates.
     Po potrebi bi za vsako državo prikazali restavracije v njej, ter za vsako letališče pripadajoča parkirišča.
 
-    drzava "Slovenija" {
-        letalisce "Letališče Ljubljana" {
-            terminal "A" {
+    drzava Slovenija {
+        letalisce LetališčeLjubljana {
+            terminal A {
                 box((3,2),(5,3),(3,2),(5,3))
             }
-            terminal "B" {
+            terminal B {
                 box((3,2),(5,3),(3,2),(5,3))
             }
         }
@@ -28,7 +28,7 @@
 
         1.1.3 
             Niz: 
-                "Letališče"
+                Letališče
 
         1.1.4 
             Koordinate: 
@@ -36,23 +36,23 @@
 
         1.1.5 
             Bloki: 
-                drzava "NAZIV" {
+                drzava NAZIV {
                     BLOK
                 }
 
-                letalisce "NAZIV" {
+                letalisce NAZIV {
                     BLOK
                 }
 
-                terminali "NAZIV" {
+                terminali NAZIV {
                     UKAZI
                 }
 
-                restavracije "NAZIV" {
+                restavracije NAZIV {
                     UKAZI
                 }
 
-                parkirisca "NAZIV" {
+                parkirisca NAZIV {
                     UKAZI
                 }
 
@@ -67,18 +67,18 @@
 
     2.1 Elementi:
 
-        Restavracije "NAZIV" {
+        Restavracije NAZIV {
             UKAZI
         }
         
-        Parkirisca "NAZIV" {
+        Parkirisca NAZIV {
             UKAZI
         }
 
     2.2 Povpraševanje
 
         Restavracije v bližini letališča
-        restavracije "Restavracije Slovenija" {
+        restavracije {
             point(2,2)
             point(2,2)
             point(2,2)
@@ -98,21 +98,21 @@
 
         DRZAVA ::= DRZAVA' DRZAVA | Ɛ
         
-        DRZAVA' ::= drzava NIZ { LETALISCE RESTAVRACIJA }
+        DRZAVA' ::= drz NIZ { LETALISCE RESTAVRACIJA }
 
-        RESTAVRACIJA ::= restavracija NIZ { POINTS } | Ɛ
+        RESTAVRACIJA ::= res { POINTS } | Ɛ
 
         LETALISCE ::= LETALISCE' LETALISCE | Ɛ
 
-        LETALISCE' ::= letalisce NIZ {TERMINAL PARKIRISCA}
+        LETALISCE' ::= let NIZ {TERMINAL PARKIRISCA}
 
         TERMINAL ::= TERMINAL' TERMINAL | Ɛ
 
-        TERMINAL' ::= terminal NIZ { UKAZ_TERMINAL }
+        TERMINAL' ::= ter NIZ { UKAZ_TERMINAL }
 
-        UKAZ_TERMINAL ::= box ( TOCKA , TOCKA, TOCKA , TOCKA )
+        UKAZ_TERMINAL ::= box ( TOCKA TOCKA TOCKA TOCKA )
 
-        PARKIRISCA ::= parkirisca NIZ { POINTS } |  Ɛ
+        PARKIRISCA ::= par NIZ { POINTS } |  Ɛ
 
         POINTS ::= POINTS' POINTS | Ɛ
 
@@ -133,84 +133,91 @@
         vejica = ,
         lparent = (
         rparent = )
-        Drzava = drzava
-        Restavracija = restavracija
-        Letalisce = letalisce
-        Terminal = terminal
-        Parkirisca = parkirisca
+        Drzava = drz
+        Restavracija = res
+        Letalisce = let
+        Terminal = ter
+        Parkirisca = par
         Point = point
         Box = box
-        skip = {\t,  \n, " "}
+        skip = {\t, \n, \r, ' '}
 
 
 
 4. Primeri
 
     4.1
-        drzava "Slovenija" {
-            letalisce "Letališče Ljubljana" {
-                terminal "A" {
-                    box((3,2),(5,3),(3,2),(5,3))
+        drz Slovenija {
+            let LetališčeLjubljana {
+                ter A {
+                    box((3,2)(5,3)(3,2)(5,3))
+                }
+            }
+        }
+        drz Hrvaška {
+            let Zagreb {
+                ter A {
+                    box((3,2)(5,3)(3,2)(5,3))
                 }
             }
         }
 
     4.2
-        drzava "Slovenija" {
-            letalisce "Letališče Ljubljana" {
-                terminal "A" {
-                    box((3,2),(5,3),(3,2),(5,3))
+        drz Slovenija {
+            let LetališčeLjubljana {
+                terminal A {
+                    box((3,2)(5,3)(3,2)(5,3))
                 }
-                terminal "B" {
-                    box((4.6,2),(5,3),(3,2),(5,3))
+                terminal B {
+                    box((3,2)(5,3)(3,2)(5,3))
                 }
-                terminal "C" {
-                    box((5,2),(5,3.6),(3,2),(5,3))
+                terminal C {
+                    box((3,2)(5,3)(3,2)(5,3))
                 }
-                terminal "D" {
-                    box((6,2),(5,3),(3,2),(5,3))
+                terminal D {
+                    box((3,2)(5,3)(3,2)(5,3))
                 }
             }
         }
 
     4.3
-        drzava "Slovenija" {
-            letalisce "Letališče Ljubljana" {
-                terminal "A" {
-                    box((3,2),(5,3),(3,2),(5,3))
+        drz Slovenija {
+            let LetališčeLjubljana {
+                terminal A {
+                    box((3,2)(5,3)(3,2)(5,3))
                 }
-                terminal "B" {
-                    box((3,2),(5,3),(3,2),(5,3))
+                terminal B {
+                    box((3,2)(5,3)(3,2)(5,3))
                 }
-                terminal "C" {
-                    box((3,2),(5,3),(3,2),(5,3))
+                terminal C {
+                    box((3,2)(5,3)(3,2)(5,3))
                 }
-                terminal "D" {
-                    box((3,2),(5,3),(3,2),(5,3))
+                terminal D {
+                    box((3,2)(5,3)(3,2)(5,3))
                 }
             }
-            restavracije "Restavracije Ljubljana" {
+            res Restavracije {
                 point(1,1)
             }
         }
 
     4.4
-        drzava "Slovenija" {
-            letalisce "Letališče Ljubljana" {
-                terminal "A" {
-                    box((3,2),(5,3),(3,2),(5,3))
+        drz Slovenija {
+            let LetališčeLjubljana {
+                terminal A {
+                    box((3,2)(5,3)(3,2)(5,3))
                 }
-                terminal "B" {
-                    box((3,2),(5,3),(3,2),(5,3))
+                terminal B {
+                    box((3,2)(5,3)(3,2)(5,3))
                 }
-                terminal "C" {
-                    box((3,2),(5,3),(3,2),(5,3))
+                terminal C {
+                    box((3,2)(5,3)(3,2)(5,3))
                 }
-                terminal "D" {
-                    box((3,2),(5,3),(3,2),(5,3))
+                terminal D {
+                    box((3,2)(5,3)(3,2)(5,3))
                 }
             }
-            restavracije "Restavracije Ljubljana" {
+            res Restavracije {
                 point(1,1)
                 point(1,1)
                 point(1,1)
@@ -220,25 +227,25 @@
         }
 
     4.5
-        drzava "Slovenija" {
-            letalisce "Letališče Ljubljana" {
-                terminal "A" {
-                    box((3,2),(5,3),(3,2),(5,3))
+        drz Slovenija {
+            let LetališčeLjubljana {
+                terminal A {
+                    box((3,2)(5,3)(3,2)(5,3))
                 }
-                terminal "B" {
-                    box((3,2),(5,3),(3,2),(5,3))
+                terminal B {
+                    box((3,2)(5,3)(3,2)(5,3))
                 }
-                terminal "C" {
-                    box((3,2),(5,3),(3,2),(5,3))
+                terminal C {
+                    box((3,2)(5,3)(3,2)(5,3))
                 }
-                terminal "D" {
-                    box((3,2),(5,3),(3,2),(5,3))
+                terminal D {
+                    box((3,2)(5,3)(3,2)(5,3))
                 }
-                parkirisca{
+                parkirisca Ljubljana{
                     point(1,1)
                 }
             }
-            restavracije "Restavracije Ljubljana" {
+            res {
                 point(1,1)
                 point(1,1)
                 point(1,1)
@@ -248,28 +255,28 @@
         }
 
     4.6
-        drzava "Slovenija" {
-            letalisce "Letališče Ljubljana" {
-                terminal "A" {
-                    box((3,2),(5,3),(3,2),(5,3))
+        drz Slovenija {
+            let LetališčeLjubljana {
+                terminal A {
+                    box((3,2)(5,3)(3,2)(5,3))
                 }
-                terminal "B" {
-                    box((3,2),(5,3),(3,2),(5,3))
+                terminal B {
+                    box((3,2)(5,3)(3,2)(5,3))
                 }
-                terminal "C" {
-                    box((3,2),(5,3),(3,2),(5,3))
+                terminal C {
+                    box((3,2)(5,3)(3,2)(5,3))
                 }
-                terminal "D" {
-                    box((3,2),(5,3),(3,2),(5,3))
+                terminal D {
+                    box((3,2)(5,3)(3,2)(5,3))
                 }
-                parkirisca{
+                parkirisca LetališčeLjubljana{
                     point(1,1)
                     point(1,1)
                     point(1,1)
                     point(1,1)
                 }
             }
-            restavracije "Restavracije Ljubljana" {
+            res {
                 point(1,1)
                 point(1,1)
                 point(1,1)
@@ -278,77 +285,77 @@
             }
         }
     4.7
-        drzava "Slovenija" {
-            letalisce "Letališče Ljubljana" {
-                terminal "A" {
-                    box((3,2),(5,3),(3,2),(5,3))
+        drz Slovenija {
+            let Ljubljana {
+                ter A {
+                    box((3,2)(5,3)(3,2)(5,3))
                 }
-                parkirisca{
+                par Ljubljana{
                     point(1,1)
                     point(1,1)
                 }
             }
-            restavracije "Restavracije Ljubljana" {
+            res {
                 point(1,1)
                 point(1,1)
             }
         }
     4.8
-        drzava "Slovenija" {
-            letalisce "Letališče Ljubljana" {
-                terminal "A" {
-                    box((3,2),(5,3),(3,2),(5,3))
+        drz Slovenija {
+            let LetališčeLjubljana {
+                terminal A {
+                    box((3,2)(5,3)(3,2)(5,3))
                 }
-                parkirisca{
+                par Ljubljana{
                     point(1,1)
                     point(1,1)
                 }
             }
-            letalisce "Letališče Celje" {
-                terminal "A" {
-                    box((3,2),(5,3),(3,2),(5,3))
+            let LetališčeCelje {
+                terminal A {
+                    box((3,2)(5,3)(3,2)(5,3))
                 }
-                parkirisca{
+                par LetališčeCelje{
                     point(1,1)
                     point(1,1)
                 }
             }
-            restavracije "Restavracije Ljubljana" {
+            res {
                 point(1,1)
                 point(1,1)
                 point(1,1)
             }
         }
     4.9
-        drzava "Slovenija" {
-            letalisce "Letališče Ljubljana" {
-                terminal "A" {
-                    box((3,2),(5,3),(3,2),(5,3))
+        drz Slovenija {
+            let LetališčeLjubljana {
+                terminal A {
+                    box((3,2)(5,3)(3,2)(5,3))
                 }
             }
-            letalisce "Letališče Celje" {
-                terminal "A" {
-                    box((3,2),(5,3),(3,2),(5,3))
+            let LetališčeCelje {
+                terminal A {
+                    box((3,2)(5,3)(3,2)(5,3))
                 }
             }
         }
     4.10
-        drzava "Slovenija" {
-            letalisce "Letališče Ljubljana" {
-                terminal "A" {
-                    box((3,2),(5,3),(3,2),(5,3))
+        drz Slovenija {
+            let LetališčeLjubljana {
+                terminal A {
+                    box((3,2)(5,3)(3,2)(5,3))
                 }
-                parkirisca{
+                par a {
                     point(1,1)
                     point(1,1.5)
                 }
             }
-            letalisce "Letališče Celje" {
-                terminal "A" {
-                    box((3,2),(5,3),(3,2),(5,3))
+            let LetališčeCelje {
+                terminal A {
+                    box((3,2)(5,3)(3,2)(5,3))
                 }
             }
-            restavracije "Restavracije Ljubljana" {
+            res {
                 point(1,1.5)
                 point(1,1)
                 point(1,1)
