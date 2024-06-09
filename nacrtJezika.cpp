@@ -150,14 +150,14 @@
         drz Slovenija {
             let LetališčeLjubljana {
                 ter A {
-                    box((3,2)(5,3)(3,2)(5,3))
+                    box((3,2)(3,4)(4,4)(4,2))
                 }
             }
         }
         drz Hrvaška {
             let Zagreb {
                 ter A {
-                    box((3,2)(5,3)(3,2)(5,3))
+                    box((3,2)(3,4)(4,4)(4,2))
                 }
             }
         }
@@ -166,16 +166,16 @@
         drz Slovenija {
             let LetališčeLjubljana {
                 terminal A {
-                    box((3,2)(5,3)(3,2)(5,3))
+                    box((3,2)(3,4)(4,4)(4,2))
                 }
                 terminal B {
-                    box((3,2)(5,3)(3,2)(5,3))
+                    box((3,2)(3,4)(4,4)(4,2))
                 }
                 terminal C {
-                    box((3,2)(5,3)(3,2)(5,3))
+                    box((3,2)(3,4)(4,4)(4,2))
                 }
                 terminal D {
-                    box((3,2)(5,3)(3,2)(5,3))
+                    box((3,2)(3,4)(4,4)(4,2))
                 }
             }
         }
@@ -184,16 +184,16 @@
         drz Slovenija {
             let LetališčeLjubljana {
                 terminal A {
-                    box((3,2)(5,3)(3,2)(5,3))
+                    box((3,2)(3,4)(4,4)(4,2))
                 }
                 terminal B {
-                    box((3,2)(5,3)(3,2)(5,3))
+                    box((3,2)(3,4)(4,4)(4,2))
                 }
                 terminal C {
-                    box((3,2)(5,3)(3,2)(5,3))
+                    box((3,2)(3,4)(4,4)(4,2))
                 }
                 terminal D {
-                    box((3,2)(5,3)(3,2)(5,3))
+                    box((3,2)(3,4)(4,4)(4,2))
                 }
             }
             res Restavracije {
@@ -205,16 +205,16 @@
         drz Slovenija {
             let LetališčeLjubljana {
                 terminal A {
-                    box((3,2)(5,3)(3,2)(5,3))
+                    box((3,2)(3,4)(4,4)(4,2))
                 }
                 terminal B {
-                    box((3,2)(5,3)(3,2)(5,3))
+                    box((3,2)(3,4)(4,4)(4,2))
                 }
                 terminal C {
-                    box((3,2)(5,3)(3,2)(5,3))
+                    box((3,2)(3,4)(4,4)(4,2))
                 }
                 terminal D {
-                    box((3,2)(5,3)(3,2)(5,3))
+                    box((3,2)(3,4)(4,4)(4,2))
                 }
             }
             res Restavracije {
@@ -230,16 +230,16 @@
         drz Slovenija {
             let LetališčeLjubljana {
                 terminal A {
-                    box((3,2)(5,3)(3,2)(5,3))
+                    box((3,2)(3,4)(4,4)(4,2))
                 }
                 terminal B {
-                    box((3,2)(5,3)(3,2)(5,3))
+                    box((3,2)(3,4)(4,4)(4,2))
                 }
                 terminal C {
-                    box((3,2)(5,3)(3,2)(5,3))
+                    box((3,2)(3,4)(4,4)(4,2))
                 }
                 terminal D {
-                    box((3,2)(5,3)(3,2)(5,3))
+                    box((3,2)(3,4)(4,4)(4,2))
                 }
                 parkirisca Ljubljana{
                     point(1,1)
@@ -258,16 +258,16 @@
         drz Slovenija {
             let LetališčeLjubljana {
                 terminal A {
-                    box((3,2)(5,3)(3,2)(5,3))
+                    box((3,2)(3,4)(4,4)(4,2))
                 }
                 terminal B {
-                    box((3,2)(5,3)(3,2)(5,3))
+                    box((3,2)(3,4)(4,4)(4,2))
                 }
                 terminal C {
-                    box((3,2)(5,3)(3,2)(5,3))
+                    box((3,2)(3,4)(4,4)(4,2))
                 }
                 terminal D {
-                    box((3,2)(5,3)(3,2)(5,3))
+                    box((3,2)(3,4)(4,4)(4,2))
                 }
                 parkirisca LetališčeLjubljana{
                     point(1,1)
@@ -288,7 +288,7 @@
         drz Slovenija {
             let Ljubljana {
                 ter A {
-                    box((3,2)(5,3)(3,2)(5,3))
+                    box((3,2)(3,4)(4,4)(4,2))
                 }
                 par Ljubljana{
                     point(1,1)
@@ -304,7 +304,7 @@
         drz Slovenija {
             let LetališčeLjubljana {
                 terminal A {
-                    box((3,2)(5,3)(3,2)(5,3))
+                    box((3,2)(3,4)(4,4)(4,2))
                 }
                 par Ljubljana{
                     point(1,1)
@@ -313,7 +313,7 @@
             }
             let LetališčeCelje {
                 terminal A {
-                    box((3,2)(5,3)(3,2)(5,3))
+                    box((3,2)(3,4)(4,4)(4,2))
                 }
                 par LetališčeCelje{
                     point(1,1)
@@ -330,12 +330,12 @@
         drz Slovenija {
             let LetališčeLjubljana {
                 terminal A {
-                    box((3,2)(5,3)(3,2)(5,3))
+                    box((3,2)(3,4)(4,4)(4,2))
                 }
             }
             let LetališčeCelje {
                 terminal A {
-                    box((3,2)(5,3)(3,2)(5,3))
+                    box((3,2)(3,4)(4,4)(4,2))
                 }
             }
         }
@@ -343,7 +343,7 @@
         drz Slovenija {
             let LetališčeLjubljana {
                 terminal A {
-                    box((3,2)(5,3)(3,2)(5,3))
+                    box((3,2)(3,4)(4,4)(4,2))
                 }
                 par a {
                     point(1,1)
@@ -352,7 +352,7 @@
             }
             let LetališčeCelje {
                 terminal A {
-                    box((3,2)(5,3)(3,2)(5,3))
+                    box((3,2)(3,4)(4,4)(4,2))
                 }
             }
             res {

@@ -3,7 +3,243 @@
 #include <string>
 #include <fstream>
 #include <map>
+#include <list>
+
 using namespace std;
+
+class Expr
+{
+    public:
+        virtual string toString() = 0;
+};
+
+
+
+class Drzava : public Expr
+{
+    public:
+        Expr* name;
+        list<Expr*> letalisca;
+        Expr* restavracije;
+
+        Drzava(Expr* name, list<Expr*> letalisca, Expr* restavracije)
+        {
+            this->name = name;
+            this->letalisca = letalisca;
+            this->restavracije = restavracije;
+        };
+
+        string toString() override
+        {
+            string out = "drz " + name->toString() + " { ";
+
+            for (Expr* let : letalisca) {
+                out += let->toString();
+            }
+            out += restavracije->toString();
+
+            out += " }";
+
+            return out;
+        }
+};
+
+class Letalisce : public Expr {
+    public:
+        Expr* name;
+        list<Expr*> terminali;
+        Expr* parkirisca;
+
+        Letalisce(Expr* name, list<Expr*> terminali, Expr* parkirisca)
+        {
+            this->name = name;
+            this->terminali = terminali;
+            this->parkirisca = parkirisca;
+        };
+
+        string toString() override
+        {
+            string out = "let " + name->toString() + " { ";
+
+            for (Expr* ter : terminali) {
+                out += ter->toString();
+            }
+            out += parkirisca->toString();
+
+            out += " }";
+            return out;
+        }
+};
+
+class Restavracija : public Expr {
+    public:
+        list<Expr*> lokacije;
+
+        Restavracija(list<Expr*> lokacije)
+        {
+            this->lokacije = lokacije;
+        };
+
+        string toString() override
+        {
+            string out = "res { ";
+
+            for (Expr* res : lokacije) {
+                out += "point " + res->toString();
+            }
+
+            out += " }";
+            return out;
+        }
+
+};
+
+class Terminal : public Expr {
+    public:
+        Expr* name;
+        Expr* box;
+
+        Terminal(Expr* name, Expr* box)
+        {
+            this->name = name;
+            this->box = box;
+        };
+
+        string toString() override
+        {
+            string out = "ter " + name->toString() + " { ";
+
+            out += box->toString();
+
+            out += " }";
+            return out;
+        }
+};
+
+class Parkirisca : public Expr {
+    public:
+        Expr* name;
+        list<Expr*> lokacije;
+
+        Parkirisca(Expr* name, list<Expr*> lokacije)
+        {
+            this->name = name;
+            this->lokacije = lokacije;
+        };
+
+        string toString() override
+        {
+            string out = "par " + name->toString() + " { ";
+
+            for (Expr* res : lokacije) {
+                out += "point " + res->toString();
+            }
+
+            out += " }";
+            return out;
+        }
+};
+
+class Point : public Expr {
+    public:
+        Expr* left;
+        Expr* right;
+
+        Point(Expr* left, Expr* right)
+        {
+            this->left = left;
+            this->right = right;
+        };
+
+        string toString() override
+        {
+            string out = "( " + left->toString() + ", " + right->toString() + " ) ";
+            return out;
+        }
+};
+
+class Box : public Expr {
+    public:
+        Expr* pointOne;
+        Expr* pointTwo;
+        Expr* pointThree;
+        Expr* pointFour;
+
+        Box(Expr* pointOne, Expr* pointTwo, Expr* pointThree, Expr* pointFour)
+        {
+            this->pointOne = pointOne;
+            this->pointTwo = pointTwo;
+            this->pointThree = pointThree;
+            this->pointFour = pointFour;
+        };
+
+        string toString() override
+        {
+            string out = "box (" + pointOne->toString() + pointTwo->toString() + pointThree->toString() + pointFour->toString() + " ) ";
+            return out;
+        }
+
+};
+
+class Real : public Expr {
+    public:
+        double val;
+
+        Real(double val)
+        {
+            this->val = val;
+        };
+
+        string toString() override
+        {
+            return to_string(val);
+        }
+};
+
+
+class Niz : public Expr {
+    public:
+        string val;
+
+        Niz(string val)
+        {
+            this->val = val;
+        };
+
+        string toString() override
+        {
+            return val;
+        }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 class Token
 {
@@ -758,6 +994,23 @@ int main(int argc, char* argv[])
                 output.close();
             }
             file.close();
+
+            //string test = Drzava( new Niz("Slovenija"), list<Expr*> letalisca{ new Letalisce( new Niz("Ljubljana"), list<Expr*> terminali{ new Terminal(new Niz("A"), new Box(new Point(new Real(1), new Real(1)),new Point(new Real(1), new Real(1)),new Point(new Real(1), new Real(1)),new Point(new Real(1), new Real(1)))) }, new Parkirisca( new Niz("parLjubljana"), list<Expr*> lokacije{ new Point(new Real(1), new Real(1)), new Point(new Real(1), new Real(1))}))}, new Restavracija( list<Expr*> lokacije{new Point(new Real(1), new Real(1)), new Point(new Real(1), new Real(1))})).toString()
+            
+
+
+            list<Expr*> terminalLjubljana{new Terminal(new Niz("A"), new Box(new Point(new Real(1), new Real(1)), new Point(new Real(1), new Real(1)), new Point(new Real(1), new Real(1)), new Point(new Real(1), new Real(1)))), new Terminal(new Niz("B"), new Box(new Point(new Real(1), new Real(1)), new Point(new Real(1), new Real(1)), new Point(new Real(1), new Real(1)), new Point(new Real(1), new Real(1)))) };
+            list<Expr*> parkiriscaLjubljana{ new Point(new Real(1), new Real(1)), new Point(new Real(1), new Real(1)) };
+            list<Expr*> letaliscaSlovenija{new Letalisce(new Niz("Ljubljana"),terminalLjubljana , new Parkirisca(new Niz("parkiriscaLjubljana"), parkiriscaLjubljana))};
+            list<Expr*> restavracijeLokacije{ new Point(new Real(1), new Real(1)), new Point(new Real(1), new Real(1)) };
+
+
+            string testRes = Drzava(new Niz("Slovenija"), letaliscaSlovenija, new Restavracija(restavracijeLokacije)).toString();
+
+
+            //string testRes = Parkirisca(new Niz("A"), parkiriscaLjubljana).toString();
+            cout << "\n" << testRes << "\n";
+
         }
     }
 
