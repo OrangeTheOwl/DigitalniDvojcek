@@ -7,6 +7,8 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  Card,
+  CardContent,
 } from "@mui/material";
 import Header from "../components/Header";
 
@@ -15,6 +17,7 @@ const Profile = () => {
   const [userId, setUserId] = useState("");
   const [allLocations, setAllLocations] = useState([]);
   const [locationId, setLocationId] = useState("");
+  const [followedFlights, setFollowedFlights] = useState([]);
 
   const checkAuth = async () => {
     try {
@@ -31,6 +34,7 @@ const Profile = () => {
         setUserId(data._id);
         setUsername(data.username);
         setLocationId(data.defaultLocation._id);
+        setFollowedFlights(data.followedFlights); // Set followed flights
       }
     } catch (err) {
       console.error(err);
@@ -93,11 +97,8 @@ const Profile = () => {
 
   return (
     <Container>
-      <Header page="Profile" />
+      <Header page="Profil" />
       <Box sx={{ my: 5 }}>
-        <Typography variant="h4" sx={{ mb: 3 }}>
-          Username: {username}
-        </Typography>
         <FormControl fullWidth>
           <InputLabel id="demo-simple-select-label">
             Privzeta lokacija
@@ -106,16 +107,62 @@ const Profile = () => {
             labelId="demo-simple-select-label"
             id="demo-simple-select"
             value={locationId}
-            label="Age"
+            label="Privzeta lokacija"
             onChange={handleChange}
           >
             {allLocations.map((location) => (
-              <MenuItem value={location._id}>
+              <MenuItem key={location._id} value={location._id}>
                 {location.city}, {location.address}
               </MenuItem>
             ))}
           </Select>
         </FormControl>
+
+        {/* Render Followed Flights */}
+        <Box sx={{ mt: 5 }}>
+          <Typography variant="h4" sx={{ mb: 2 }}>
+            Priljubljeni leti
+          </Typography>
+          {followedFlights.length > 0 ? (
+            followedFlights.map((flight) => (
+              <Card key={flight._id} sx={{ mb: 2 }}>
+                <CardContent>
+                  <Typography>Destinacija: {flight.destination}</Typography>
+                  <Typography>{flight.gate.label}</Typography>
+                  <Typography>
+                    Planiran odhod:{" "}
+                    {new Date(
+                      new Date(flight.departurePlanned)
+                        .toISOString()
+                        .slice(0, -1)
+                    ).toLocaleString("de-DE")}
+                  </Typography>
+                  <Typography>
+                    Točen odhod:{" "}
+                    {new Date(
+                      new Date(flight.departureExact).toISOString().slice(0, -1)
+                    ).toLocaleString("de-DE")}
+                  </Typography>
+                  <Typography>
+                    Planiran prihod:{" "}
+                    {new Date(
+                      new Date(flight.arrivalPlanned).toISOString().slice(0, -1)
+                    ).toLocaleString("de-DE")}
+                  </Typography>
+                  <Typography>
+                    Točen prihod:{" "}
+                    {new Date(
+                      new Date(flight.arrivalExact).toISOString().slice(0, -1)
+                    ).toLocaleString("de-DE")}
+                  </Typography>
+                  <Typography>Status: {flight.status}</Typography>
+                </CardContent>
+              </Card>
+            ))
+          ) : (
+            <Typography>No followed flights</Typography>
+          )}
+        </Box>
       </Box>
     </Container>
   );
