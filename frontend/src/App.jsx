@@ -33,7 +33,7 @@ function App() {
       <CssBaseline />
       <Router>
         <Routes>
-          <Route path="/" Component={Home} />
+          <Route path="/" Component={Map} />
           <Route path="/login" Component={Login} />
           <Route path="/register" Component={Register} />
           <Route path="/airports" Component={Airports} />
@@ -41,7 +41,6 @@ function App() {
           <Route path="/trafficInfo" Component={TrafficInfo} />
           <Route path="/weatherConditions" Component={WeatherConditions} />
           <Route path="/profile" Component={Profile} />
-          <Route path="/map" Component={Map} />
           <Route path="/graph" Component={Graph} />
         </Routes>
       </Router>
