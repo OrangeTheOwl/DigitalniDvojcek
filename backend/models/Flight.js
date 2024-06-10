@@ -9,6 +9,8 @@ const flightSchema = new mongoose.Schema(
     changeTime: { type: Number },
     status: { type: String },
     destination: { type: String },
+    destinationLat: { type: Number }, // Add latitude
+    destinationLng: { type: Number }, // Add longitude
     airport: { type: mongoose.Schema.Types.ObjectId, ref: "airport" },
     gate: { type: mongoose.Schema.Types.ObjectId, ref: "gate" },
     airline: { type: String },

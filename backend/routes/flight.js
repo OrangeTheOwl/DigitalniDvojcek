@@ -1,12 +1,44 @@
 const express = require("express");
 const Flight = require("../models/Flight");
+const axios = require("axios");
 
 const router = express.Router();
+
+// Helper function to get coordinates
+const getCoordinates = async (address) => {
+  try {
+    const response = await axios.get(
+      "https://maps.googleapis.com/maps/api/geocode/json",
+      {
+        params: {
+          address: `${address}`,
+          key: "AIzaSyCDbwnaWOg-UHnB3Oen5PdHsynGZHf27gM",
+        },
+      }
+    );
+    const location = response.data.results[0].geometry.location;
+    return location;
+  } catch (error) {
+    console.error(`Error fetching coordinates: ${error}`);
+    throw new Error("Failed to fetch coordinates");
+  }
+};
 
 // Create a flight
 router.post("/", async (req, res) => {
   try {
-    const flight = new Flight(req.body);
+    const { destination, ...flightData } = req.body;
+
+    // Get the coordinates for the destination
+    const coordinates = await getCoordinates(destination.trim());
+
+    const flight = new Flight({
+      ...flightData,
+      destination,
+      destinationLat: coordinates.lat,
+      destinationLng: coordinates.lng,
+    });
+
     await flight.save();
     res.status(200).json({ msg: "Flight created successfully" });
   } catch (err) {

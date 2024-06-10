@@ -25,7 +25,7 @@ const modalStyles = {
   },
 };
 
-const Login = () => {
+const Register = () => {
   const navigate = useNavigate();
 
   const [username, setUsername] = useState("");
@@ -140,4 +140,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;

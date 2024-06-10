@@ -28,13 +28,13 @@ const modalStyles = {
 const Login = () => {
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
   const handleLogin = async () => {
-    if (email === "" || password === "") {
+    if (username === "" || password === "") {
       setIsModalOpen(true);
       setErrorMessage("Prosim izpolni vsa polja");
       setTimeout(() => setIsModalOpen(false), 3000);
@@ -46,7 +46,7 @@ const Login = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ username, password }),
         credentials: "include",
       });
       if (res.ok) navigate("/");
@@ -69,18 +69,18 @@ const Login = () => {
       minHeight="100vh"
     >
       <Card variant="outlined">
-        <CardHeader title="Login" />
+        <CardHeader title="Prijava" />
         <CardContent>
           <TextField
-            label="Email"
+            label="Ime"
             variant="outlined"
             fullWidth
             margin="normal"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
           />
           <TextField
-            label="Password"
+            label="Geslo"
             variant="outlined"
             fullWidth
             margin="normal"
@@ -91,7 +91,7 @@ const Login = () => {
           <br />
           <br />
           <Button variant="contained" color="primary" onClick={handleLogin}>
-            Login
+            Prijava
           </Button>
         </CardContent>
       </Card>
