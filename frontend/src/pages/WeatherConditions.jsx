@@ -60,7 +60,7 @@ const WeatherConditions = () => {
 
   return (
     <Container>
-      <Header page="Weather Conditions" />
+      <Header page="Vremenski Pogoji" />
       <TextField
         disabled
         fullWidth
