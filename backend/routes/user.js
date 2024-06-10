@@ -54,11 +54,13 @@ router.post("/", async (req, res) => {
 // Login with a user account
 router.post("/login", async (req, res) => {
   try {
-    const { email, password } = req.body;
-    const user = await User.findOne({ email });
+    const { username, password } = req.body;
+    console.log(username, password);
+    const user = await User.findOne({ username });
+    console.log(user);
 
     if (!user || !(await bcrypt.compare(password, user.password))) {
-      return res.status(401).json({ message: "Invalid email or password" });
+      return res.status(401).json({ message: "Invalid username or password" });
     }
 
     const token = generateJWT(user._id);
@@ -82,8 +84,11 @@ router.get("/check", async (req, res) => {
       jwt.verify(token, process.env.JWT_SECRET, async (err, decodedToken) => {
         if (!err) {
           const user = await User.findById(decodedToken.id).populate(
-            "defaultLocation"
+            "defaultLocation followedFlights"
           );
+          for (flight of user.followedFlights) {
+            await flight.populate("gate");
+          }
           res.status(200).json(user);
         }
       });
@@ -131,6 +136,58 @@ router.post("/changeDefaultLocation", async (req, res) => {
     res.status(500).json({
       message: "An error has occurred while changing default location",
     });
+  }
+});
+
+// Add a flight to the followed flights
+router.post("/:userId/follow-flight/:flightId", async (req, res) => {
+  const { userId, flightId } = req.params;
+  try {
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).send("User not found");
+
+    if (!user.followedFlights.includes(flightId)) {
+      user.followedFlights.push(flightId);
+      await user.save();
+    }
+
+    await user.populate("followedFlights");
+    res.status(200).send(user);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send(error);
+  }
+});
+
+// Remove a flight from the followed flights
+router.post("/:userId/unfollow-flight/:flightId", async (req, res) => {
+  const { userId, flightId } = req.params;
+  try {
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).send("User not found");
+
+    user.followedFlights = user.followedFlights.filter(
+      (id) => id.toString() !== flightId
+    );
+    await user.save();
+
+    await user.populate("followedFlights");
+    res.status(200).send(user);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send(error);
+  }
+});
+
+// Get all followed flights
+router.get("/:userId/followed-flights", async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const user = await User.findById(userId).populate("followedFlights");
+    if (!user) return res.status(404).send("User not found");
+    res.status(200).send(user.followedFlights);
+  } catch (error) {
+    res.status(500).send(error);
   }
 });
 
