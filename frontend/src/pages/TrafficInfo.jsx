@@ -64,12 +64,12 @@ const TrafficInfo = () => {
 
   useEffect(() => {
     checkAuth();
-    // fetchTrafficInfos();
+    fetchTrafficInfos();
   }, []);
 
   return (
     <Container>
-      <Header page="Traffic Info" />
+      <Header page="Prometne Informacije" />
       <TextField
         disabled
         fullWidth
