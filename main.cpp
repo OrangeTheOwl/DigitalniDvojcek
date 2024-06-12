@@ -65,6 +65,8 @@ public:
         }
         
         out += restavracije->toGeoJSON(name, NULL);
+        out += ",";
+
         return out;
 
     }
@@ -109,7 +111,7 @@ public:
     string toGeoJSON(Expr* drzava, Expr* letalisce) override
     {
         string out = "";
-
+        cout << "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" + terminali.size() ;
         for (Expr* ter : terminali) {
             out += ter->toGeoJSON(drzava, name);
             out += ",";
@@ -118,11 +120,12 @@ public:
 
         if (parkirisca == NULL)
         {
-            out = out.substr(0, out.size() - 1);
             return out;
         }
 
         out += parkirisca->toGeoJSON(drzava, name);
+        out += ",";
+
         return out;
     }
 };
@@ -151,7 +154,7 @@ public:
 
     string toGeoJSON(Expr* drzava, Expr* letalisce) override
     {
-        string out = ",{\n \"type\": \"Feature\",\n\"geometry\": {\n\"type\": \"MultiPoint\",\n\"coordinates\":[\n";
+        string out = "{\n \"type\": \"Feature\",\n\"geometry\": {\n\"type\": \"MultiPoint\",\n\"coordinates\":[\n";
         
         for (Expr* lok : lokacije) {
             out += lok->toGeoJSON(NULL, NULL);
@@ -192,7 +195,7 @@ public:
 
         out += box->toGeoJSON(NULL, NULL);
 
-        out += "]\n]\n},\n\"properties\":{\n\"id\":\"terminal\",\n\"drzava\": \"" + drzava->toString() + "\",\n\"letalisce\": \"" +letalisce->toString() +  "\",\n\"naziv\": " + name->toString() +"\"\n }\n }";
+        out += "]\n]\n},\n\"properties\":{\n\"id\":\"terminal\",\n\"drzava\": \"" + drzava->toString() + "\",\n\"letalisce\": \"" +letalisce->toString() +  "\",\n\"naziv\": \"" + name->toString() +"\"\n }\n }";
         return out;
     }
 };
@@ -231,7 +234,7 @@ public:
 
     string toGeoJSON(Expr* drzava, Expr* letalisce) override
     {
-        string out = ",{\n \"type\": \"Feature\",\n\"geometry\": {\n\"type\": \"MultiPoint\",\n\"coordinates\":[\n";
+        string out = "{\n \"type\": \"Feature\",\n\"geometry\": {\n\"type\": \"MultiPoint\",\n\"coordinates\":[\n";
 
         for (Expr* lok : lokacije) {
             out += lok->toGeoJSON(NULL, NULL);
@@ -239,7 +242,7 @@ public:
         }
         out = out.substr(0, out.size() - 1);
 
-        out += "]\n},\n\"properties\":{\n\"id\":\"parkirisce\",\n\"drzava\": \"" + drzava->toString() + "\",\n\"letalisce\": " + letalisce->toString() + "\",\n\"naziv\": " + name->toString() + "\" }\n }";
+        out += "]\n},\n\"properties\":{\n\"id\":\"parkirisce\",\n\"drzava\": \"" + drzava->toString() + "\",\n\"letalisce\": \"" + letalisce->toString() + "\",\n\"naziv\": \"" + name->toString() + "\" }\n }";
         return out;
     }
 };
@@ -258,7 +261,7 @@ public:
     string toString() override
     {
         cout << "___15";
-        string out = "( " + left->toString() + ", " + right->toString() + " ) ";
+        string out = "( " + left->toString() + ", " + right->toString() + " )";
         cout << "___16";
         return out;
     }
@@ -294,7 +297,7 @@ public:
     }
     string toGeoJSON(Expr* drzava, Expr* letalisce) override
     {
-        string out = pointOne->toGeoJSON(NULL, NULL) +",\n" + pointTwo->toGeoJSON(NULL, NULL) + ",\n" + pointThree->toGeoJSON(NULL, NULL) + ",\n" + pointFour->toGeoJSON(NULL, NULL) + "\n";
+        string out = pointOne->toGeoJSON(NULL, NULL) +",\n" + pointTwo->toGeoJSON(NULL, NULL) + ",\n" + pointThree->toGeoJSON(NULL, NULL) + ",\n" + pointFour->toGeoJSON(NULL, NULL) + ",\n" + pointOne->toGeoJSON(NULL, NULL) + "\n";
         return out;
     }
 
@@ -316,7 +319,7 @@ public:
     }
     string toGeoJSON(Expr* drzava, Expr* letalisce) override
     {
-
+        return "";
     }
 };
 
@@ -337,7 +340,7 @@ public:
     }
     string toGeoJSON(Expr* drzava, Expr* letalisce) override
     {
-
+        return "";
     }
 };
 
@@ -1269,6 +1272,18 @@ public:
 };
 
 
+string GenerateGeoJson(list<Expr*> drevo) {
+
+    string out = "\n{\n\"type\": \"FeatureCollection\",\n\"features\" : [\n";
+    for (Expr* element : drevo) {
+        out += element->toGeoJSON(NULL, NULL);
+    }
+    out = out.substr(0, out.size() - 1);
+    out += "]\n}\n";
+    return out;
+
+}
+
 
 
 int main(int argc, char* argv[])
@@ -1362,13 +1377,14 @@ int main(int argc, char* argv[])
             if (izraz.first)
             {
                 outputText = "accept";
-                cout << "true";
+                cout << "true\n";
                 
-                list<Expr*> rez = izraz.second;
-                string outputString = "";
-                for (Expr* element : rez) {
-                    outputString += element->toString();
-                }
+                //list<Expr*> rez = izraz.second;
+
+                string outputString = GenerateGeoJson(izraz.second);
+                /*for (Expr* element : rez) {
+                    outputString += element->toGeoJSON(NULL, NULL);
+                }*/
                 cout << outputString << endl;
               /*  cout << "test";*/
             }
