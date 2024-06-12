@@ -9,207 +9,336 @@ using namespace std;
 
 class Expr
 {
-    public:
-        virtual string toString() = 0;
+public:
+    virtual string toString() = 0;
+    virtual string toGeoJSON(Expr* drzava, Expr* letalisce) = 0;
 };
 
 
 
 class Drzava : public Expr
 {
-    public:
-        Expr* name;
-        list<Expr*> letalisca;
-        Expr* restavracije;
+public:
+    Expr* name;
+    list<Expr*> letalisca;
+    Expr* restavracije;
 
-        Drzava(Expr* name, list<Expr*> letalisca, Expr* restavracije)
+    Drzava(Expr* name, list<Expr*> letalisca, Expr* restavracije)
+    {
+        this->name = name;
+        this->letalisca = letalisca;
+        this->restavracije = restavracije;
+    };
+
+    string toString() override
+    {
+        cout << "___1";
+        string out = "drz " + name->toString() + " { ";
+
+        for (Expr* let : letalisca) {
+            cout << "___2";
+            out += let->toString();
+        }
+        if (restavracije == NULL)
         {
-            this->name = name;
-            this->letalisca = letalisca;
-            this->restavracije = restavracije;
-        };
-
-        string toString() override
-        {
-            string out = "drz " + name->toString() + " { ";
-
-            for (Expr* let : letalisca) {
-                out += let->toString();
-            }
-            out += restavracije->toString();
-
-            out += " }";
-
+            out += " }"; 
             return out;
         }
+
+        out += restavracije->toString();
+        cout << "___3";
+        out += " }";
+
+        return out;
+    }
+
+    string toGeoJSON(Expr* drzava, Expr* letalisce) override
+    {
+        string out = "";
+
+        for (Expr* let : letalisca) {
+            out += let->toGeoJSON(name, NULL);
+        }
+        if (restavracije == NULL)
+        {
+            return out;
+        }
+        
+        out += restavracije->toGeoJSON(name, NULL);
+        return out;
+
+    }
 };
 
 class Letalisce : public Expr {
-    public:
-        Expr* name;
-        list<Expr*> terminali;
-        Expr* parkirisca;
+public:
+    Expr* name;
+    list<Expr*> terminali;
+    Expr* parkirisca;
 
-        Letalisce(Expr* name, list<Expr*> terminali, Expr* parkirisca)
+    Letalisce(Expr* name, list<Expr*> terminali, Expr* parkirisca)
+    {
+        this->name = name;
+        this->terminali = terminali;
+        this->parkirisca = parkirisca;
+    };
+
+    string toString() override
+    {
+        string out = "let " + name->toString() + " { ";
+
+        cout << "___4";
+        for (Expr* ter : terminali) {
+            cout << "___5";
+            out += ter->toString();
+        }
+
+        if (parkirisca == NULL)
         {
-            this->name = name;
-            this->terminali = terminali;
-            this->parkirisca = parkirisca;
-        };
-
-        string toString() override
-        {
-            string out = "let " + name->toString() + " { ";
-
-            for (Expr* ter : terminali) {
-                out += ter->toString();
-            }
-            out += parkirisca->toString();
-
             out += " }";
             return out;
         }
+
+        out += parkirisca->toString();
+        cout << "___6";
+        out += " }";
+        return out;
+    }
+
+
+    string toGeoJSON(Expr* drzava, Expr* letalisce) override
+    {
+        string out = "";
+
+        for (Expr* ter : terminali) {
+            out += ter->toGeoJSON(drzava, name);
+            out += ",";
+        }
+        
+
+        if (parkirisca == NULL)
+        {
+            out = out.substr(0, out.size() - 1);
+            return out;
+        }
+
+        out += parkirisca->toGeoJSON(drzava, name);
+        return out;
+    }
 };
 
 class Restavracija : public Expr {
-    public:
-        list<Expr*> lokacije;
+public:
+    list<Expr*> lokacije;
 
-        Restavracija(list<Expr*> lokacije)
-        {
-            this->lokacije = lokacije;
-        };
+    Restavracija(list<Expr*> lokacije)
+    {
+        this->lokacije = lokacije;
+    };
 
-        string toString() override
-        {
-            string out = "res { ";
-
-            for (Expr* res : lokacije) {
-                out += "point " + res->toString();
-            }
-
-            out += " }";
-            return out;
+    string toString() override
+    {
+        string out = "res { ";
+        cout << "___7";
+        for (Expr* res : lokacije) {
+            cout << "___8";
+            out += "point " + res->toString();
         }
+        cout << "___9";
+        out += " }";
+        return out;
+    }
+
+    string toGeoJSON(Expr* drzava, Expr* letalisce) override
+    {
+        string out = ",{\n \"type\": \"Feature\",\n\"geometry\": {\n\"type\": \"MultiPoint\",\n\"coordinates\":[\n";
+        
+        for (Expr* lok : lokacije) {
+            out += lok->toGeoJSON(NULL, NULL);
+            out += ",";
+        }
+        out = out.substr(0, out.size() - 1);
+
+        out += "]\n},\n\"properties\":{\n\"id\":\"restavracija\",\n\"drzava\": \"" + drzava->toString() + "\"\n}\n}";
+        return out;
+    }
 
 };
 
 class Terminal : public Expr {
-    public:
-        Expr* name;
-        Expr* box;
+public:
+    Expr* name;
+    Expr* box;
 
-        Terminal(Expr* name, Expr* box)
-        {
-            this->name = name;
-            this->box = box;
-        };
+    Terminal(Expr* name, Expr* box)
+    {
+        this->name = name;
+        this->box = box;
+    };
 
-        string toString() override
-        {
-            string out = "ter " + name->toString() + " { ";
+    string toString() override
+    {
+        string out = "ter " + name->toString() + " { ";
+        cout << "___10";
+        out += box->toString();
+        cout << "___11";
+        out += " }";
+        return out;
+    }
 
-            out += box->toString();
+    string toGeoJSON(Expr* drzava, Expr* letalisce) override
+    {
+        string out = "{\n \"type\": \"Feature\",\n\"geometry\": {\n\"type\": \"Polygon\",\n\"coordinates\":[\n[\n";
 
-            out += " }";
-            return out;
-        }
+        out += box->toGeoJSON(NULL, NULL);
+
+        out += "]\n]\n},\n\"properties\":{\n\"id\":\"terminal\",\n\"drzava\": \"" + drzava->toString() + "\",\n\"letalisce\": \"" +letalisce->toString() +  "\",\n\"naziv\": " + name->toString() +"\"\n }\n }";
+        return out;
+    }
 };
 
 class Parkirisca : public Expr {
-    public:
-        Expr* name;
-        list<Expr*> lokacije;
+public:
+    Expr* name;
+    list<Expr*> lokacije;
 
-        Parkirisca(Expr* name, list<Expr*> lokacije)
-        {
-            this->name = name;
-            this->lokacije = lokacije;
-        };
+    Parkirisca(Expr* name, list<Expr*> lokacije)
+    {
+        this->name = name;
+        this->lokacije = lokacije;
+    };
 
-        string toString() override
+    string toString() override
+    {
+        if (lokacije.size() != 0)
         {
             string out = "par " + name->toString() + " { ";
-
+            cout << "___12";
             for (Expr* res : lokacije) {
+                cout << "___13";
                 out += "point " + res->toString();
             }
-
+            cout << "___14";
             out += " }";
             return out;
         }
+        else
+        {
+            return "";
+        }
+        
+    }
+
+    string toGeoJSON(Expr* drzava, Expr* letalisce) override
+    {
+        string out = ",{\n \"type\": \"Feature\",\n\"geometry\": {\n\"type\": \"MultiPoint\",\n\"coordinates\":[\n";
+
+        for (Expr* lok : lokacije) {
+            out += lok->toGeoJSON(NULL, NULL);
+            out += ",";
+        }
+        out = out.substr(0, out.size() - 1);
+
+        out += "]\n},\n\"properties\":{\n\"id\":\"parkirisce\",\n\"drzava\": \"" + drzava->toString() + "\",\n\"letalisce\": " + letalisce->toString() + "\",\n\"naziv\": " + name->toString() + "\" }\n }";
+        return out;
+    }
 };
 
 class Point : public Expr {
-    public:
-        Expr* left;
-        Expr* right;
+public:
+    Expr* left;
+    Expr* right;
 
-        Point(Expr* left, Expr* right)
-        {
-            this->left = left;
-            this->right = right;
-        };
+    Point(Expr* left, Expr* right)
+    {
+        this->left = left;
+        this->right = right;
+    };
 
-        string toString() override
-        {
-            string out = "( " + left->toString() + ", " + right->toString() + " ) ";
-            return out;
-        }
+    string toString() override
+    {
+        cout << "___15";
+        string out = "( " + left->toString() + ", " + right->toString() + " ) ";
+        cout << "___16";
+        return out;
+    }
+
+    string toGeoJSON(Expr* drzava, Expr* letalisce) override
+    {
+        string out = "[" + left->toString() + ", " + right->toString() + "]";
+        return out;
+    }
 };
 
 class Box : public Expr {
-    public:
-        Expr* pointOne;
-        Expr* pointTwo;
-        Expr* pointThree;
-        Expr* pointFour;
+public:
+    Expr* pointOne;
+    Expr* pointTwo;
+    Expr* pointThree;
+    Expr* pointFour;
 
-        Box(Expr* pointOne, Expr* pointTwo, Expr* pointThree, Expr* pointFour)
-        {
-            this->pointOne = pointOne;
-            this->pointTwo = pointTwo;
-            this->pointThree = pointThree;
-            this->pointFour = pointFour;
-        };
+    Box(Expr* pointOne, Expr* pointTwo, Expr* pointThree, Expr* pointFour)
+    {
+        this->pointOne = pointOne;
+        this->pointTwo = pointTwo;
+        this->pointThree = pointThree;
+        this->pointFour = pointFour;
+    };
 
-        string toString() override
-        {
-            string out = "box (" + pointOne->toString() + pointTwo->toString() + pointThree->toString() + pointFour->toString() + " ) ";
-            return out;
-        }
+    string toString() override
+    {
+        cout << "___17";
+        string out = "box (" + pointOne->toString() + pointTwo->toString() + pointThree->toString() + pointFour->toString() + " ) ";
+        cout << "___18";
+        return out;
+    }
+    string toGeoJSON(Expr* drzava, Expr* letalisce) override
+    {
+        string out = pointOne->toGeoJSON(NULL, NULL) +",\n" + pointTwo->toGeoJSON(NULL, NULL) + ",\n" + pointThree->toGeoJSON(NULL, NULL) + ",\n" + pointFour->toGeoJSON(NULL, NULL) + "\n";
+        return out;
+    }
 
 };
 
 class Real : public Expr {
-    public:
-        double val;
+public:
+    double val;
 
-        Real(double val)
-        {
-            this->val = val;
-        };
+    Real(double val)
+    {
+        this->val = val;
+    };
 
-        string toString() override
-        {
-            return to_string(val);
-        }
+    string toString() override
+    {
+        cout << "___19";
+        return to_string(val);
+    }
+    string toGeoJSON(Expr* drzava, Expr* letalisce) override
+    {
+
+    }
 };
 
 
 class Niz : public Expr {
-    public:
-        string val;
+public:
+    string val;
 
-        Niz(string val)
-        {
-            this->val = val;
-        };
+    Niz(string val)
+    {
+        this->val = val;
+    };
 
-        string toString() override
-        {
-            return val;
-        }
+    string toString() override
+    {
+        cout << "___20";
+        return val;
+    }
+    string toGeoJSON(Expr* drzava, Expr* letalisce) override
+    {
+
+    }
 };
 
 
@@ -611,14 +740,14 @@ public:
                 result.second.merge(temp.second);
                 return result;
             }
-            
+
         }
-        else 
+        else
         {
             result.first = false;
             return result;
         }
-        
+
 
 
 
@@ -718,9 +847,9 @@ public:
                 result.second.merge(temp.second);
                 return result;
             }
-            
+
         }
-        else 
+        else
         {
             result.first = false;
             return result;
@@ -750,8 +879,8 @@ public:
         if (lexem.currentToken().getToken() == 19 /*letalisce*/)
         {
             lexem.nextToken();
-            
-            
+
+
             pair<bool, Expr*> naziv = niz();
             if (naziv.first)
             {
@@ -762,7 +891,7 @@ public:
 
                     pair<bool, list<Expr*>> seznamTerminalov = terminal();
                     pair<bool, Expr*> seznamParkirisca = parkirisca();
-                    
+
                     //terminal in parkirisca
                     if (seznamTerminalov.first && seznamParkirisca.first)
                     {
@@ -773,7 +902,14 @@ public:
 
 
                             result.first = true;
+
+                            if (seznamParkirisca.second == NULL)
+                            {
+                                cout << "aaaaaaaaaaaaaaa";
+                            }
+
                             result.second = new Letalisce(naziv.second, seznamTerminalov.second, seznamParkirisca.second);
+
                             return result;
                         }
                     }
@@ -815,81 +951,142 @@ public:
             }
         }
 
-        
-        else 
+
+        result.first = false;
+        return result;
+
+    }
+
+    pair<bool, list<Expr*>> terminal() {
+
+        pair<bool, list<Expr*>> result;
+        list<Expr*> listOfAll;
+
+        pair<bool, Expr*> single = terminalS();
+        result.first = single.first;
+        listOfAll.push_back(single.second);
+        result.second = listOfAll;
+
+        if (single.first)
+        {
+            if (lexem.currentToken().getToken() != 22)
+            {
+                return result;
+            }
+            else
+            {
+                pair<bool, list<Expr*>> temp = terminal();
+                result.first = temp.first;
+                result.second.merge(temp.second);
+                return result;
+            }
+
+        }
+        else
         {
             result.first = false;
             return result;
         }
-        
+
+
+
+
+
+
+
+
+        // if (terminalS())
+        // {
+        //     if (lexem.currentToken().getToken() != 22 /*terminal*/)
+        //     {
+        //         return true;
+        //     }
+        //     else {
+        //         terminal();
+        //     }
+
+        // }
+        // else return false;
     }
 
-    bool terminal() {
-
-        if (terminalS())
-        {
-            if (lexem.currentToken().getToken() != 22 /*terminal*/)
-            {
-                return true;
-            }
-            else {
-                terminal();
-            }
-
-        }
-        else return false;
-    }
-
-    bool terminalS() {
+    pair<bool, Expr*> terminalS() {
+        pair<bool, Expr*> result;
         if (lexem.currentToken().getToken() == 22 /*terminal*/)
         {
             lexem.nextToken();
 
-            if (niz())
+            pair<bool, Expr*> naziv = niz();
+
+            if (naziv.first)
             {
                 //begin
                 if (lexem.currentToken().getToken() == 5)
                 {
                     lexem.nextToken();
 
+                    pair<bool, Expr*> box = ukaz_terminal();
+
                     //ukazi terminala
-                    if (ukaz_terminal())
+                    if (box.first)
                     {
                         //end
                         if (lexem.currentToken().getToken() == 6)
                         {
                             lexem.nextToken();
-                            return true;
+
+                            result.first = true;
+                            result.second = new Terminal(naziv.second, box.second);
+
+                            return result;
                         }
+                        cout << "044444";
+                        result.first = false;
+                        return result;
                     }
+                    cout << "0444";
+                    result.first = false;
+                    return result;
                 }
+                cout << "044";
+                result.first = false;
+                return result;
             }
         }
         cout << "04";
-        return false;
+        result.first = false;
+        return result;
     }
 
-    bool parkirisca() {
+    pair<bool, Expr*> parkirisca() {
+        pair<bool, Expr*> result;
+
         //parkirisca
         if (lexem.currentToken().getToken() == 25)
         {
             lexem.nextToken();
 
-            if (niz())
+            pair<bool, Expr*> naziv = niz();
+
+            if (naziv.first)
             {
                 //begin
                 if (lexem.currentToken().getToken() == 5)
                 {
                     lexem.nextToken();
 
+                    pair<bool, list<Expr*>> seznamTock = points();
+
                     //points
-                    if (points())
+                    if (seznamTock.first)
                     {
                         //end
                         if (lexem.currentToken().getToken() == 6)
                         {
                             lexem.nextToken();
-                            return true;
+                            result.first = true;
+                            result.second = new Parkirisca(naziv.second, seznamTock.second);
+
+                            return result;
                         }
                     }
                 }
@@ -897,11 +1094,16 @@ public:
 
 
         }
-        else return true;
+        else {
+            result.first = true;
+            return result;
+        }
 
     }
 
-    bool ukaz_terminal() {
+    pair<bool, Expr*> ukaz_terminal() {
+        pair<bool, Expr*> result;
+
         //box
         if (lexem.currentToken().getToken() == 32)
         {
@@ -911,86 +1113,157 @@ public:
             {
                 lexem.nextToken();
 
-                if (tocka() && tocka() && tocka() && tocka())
+                pair<bool, Expr*> tockaEna = tocka();
+                pair<bool, Expr*> tockaDve = tocka();
+                pair<bool, Expr*> tockaTri = tocka();
+                pair<bool, Expr*> tockaStiri = tocka();
+
+                if (tockaEna.second && tockaDve.second && tockaTri.second && tockaStiri.second)
                 {
                     if (lexem.currentToken().getToken() == 8 /*rParanet*/)
                     {
                         lexem.nextToken();
-                        return true;
+
+                        result.first = true;
+                        result.second = new Box(tockaEna.second, tockaDve.second, tockaTri.second, tockaStiri.second);
+
+                        return result;
                     }
                 }
             }
         }
         cout << "05";
-        return false;
+        result.first = false;
+        return result;
     }
 
-    bool points() {
+    pair<bool, list<Expr*>> points() {
 
-        if (pointsS())
+        pair<bool, list<Expr*>> result;
+        list<Expr*> listOfAll;
+
+        pair<bool, Expr*> single = pointsS();
+        result.first = single.first;
+        listOfAll.push_back(single.second);
+        result.second = listOfAll;
+
+        if (single.first)
         {
             if (lexem.currentToken().getToken() != 29 /*point*/)
             {
-                return true;
+                return result;
             }
-            else {
-                points();
+            else
+            {
+                pair<bool, list<Expr*>> temp = points();
+                result.first = temp.first;
+                result.second.merge(temp.second);
+                return result;
             }
 
         }
-        else return false;
+        else
+        {
+            result.first = false;
+            return result;
+        }
+
+
+        // if (pointsS())
+        // {
+        //     if (lexem.currentToken().getToken() != 29 /*point*/)
+        //     {
+        //         return true;
+        //     }
+        //     else {
+        //         points();
+        //     }
+
+        // }
+        // else return false;
 
     }
 
-    bool pointsS() {
+    pair<bool, Expr*> pointsS() {
+        pair<bool, Expr*> result;
         if (lexem.currentToken().getToken() == 29 /*point*/)
         {
             lexem.nextToken();
-            return tocka();
+            pair<bool, Expr*> point = tocka();
+
+            if (point.first)
+            {
+                result.first = true;
+                result.second = point.second;
+                return result;
+            }
         }
         cout << "06";
-        return false;
+        result.first = false;
+        return result;
     }
 
-    bool tocka() {
+    pair<bool, Expr*> tocka() {
+        pair<bool, Expr*> result;
         if (lexem.currentToken().getToken() == 7 /*lParanet*/)
         {
             lexem.nextToken();
 
-            if (number())
+            pair<bool, Expr*> firstNum = number();
+
+            if (firstNum.first)
             {
                 if (lexem.currentToken().getToken() == 9 /*comma*/)
                 {
                     lexem.nextToken();
-
-                    if (number())
+                    pair<bool, Expr*> secondNum = number();
+                    if (secondNum.first)
                     {
                         if (lexem.currentToken().getToken() == 8 /*rParanet*/)
                         {
                             lexem.nextToken();
-                            return true;
+                            result.first = true;
+                            result.second = new Point(firstNum.second, secondNum.second);
+
+                            return result;
                         }
-
+                        cout << "/074/";
                     }
-
+                    cout << "/073/";
                 }
-
+                cout << "/072/";
             }
+            cout << "/071/";
 
         }
         cout << "07";
-        return false;
+        result.first = false;
+        return result;
 
     }
 
-    bool number() {
+    pair<bool, Expr*> number() {
+
+        pair<bool, Expr*> result;
         if (isReal())
         {
+            result.first = true;
+            result.second = new Real(stod(lexem.currentToken().getLexem()));
             lexem.nextToken();
-            return true;
+            return result;
         }
-        cout << "08";
-        return false;
+        result.first = false;
+        cout << "02";
+        return result;
+
+
+        // if (isReal())
+        // {
+        //     lexem.nextToken();
+        //     return true;
+        // }
+        // cout << "08";
+        // return false;
     }
 
 };
@@ -1084,10 +1357,20 @@ int main(int argc, char* argv[])
             Parser test(temp);
 
             string outputText = "";
-            if (test.parse())
+
+            pair<bool, list<Expr*>> izraz = test.parse();
+            if (izraz.first)
             {
                 outputText = "accept";
                 cout << "true";
+                
+                list<Expr*> rez = izraz.second;
+                string outputString = "";
+                for (Expr* element : rez) {
+                    outputString += element->toString();
+                }
+                cout << outputString << endl;
+              /*  cout << "test";*/
             }
             else
             {
@@ -1105,21 +1388,23 @@ int main(int argc, char* argv[])
             file.close();
 
             //string test = Drzava( new Niz("Slovenija"), list<Expr*> letalisca{ new Letalisce( new Niz("Ljubljana"), list<Expr*> terminali{ new Terminal(new Niz("A"), new Box(new Point(new Real(1), new Real(1)),new Point(new Real(1), new Real(1)),new Point(new Real(1), new Real(1)),new Point(new Real(1), new Real(1)))) }, new Parkirisca( new Niz("parLjubljana"), list<Expr*> lokacije{ new Point(new Real(1), new Real(1)), new Point(new Real(1), new Real(1))}))}, new Restavracija( list<Expr*> lokacije{new Point(new Real(1), new Real(1)), new Point(new Real(1), new Real(1))})).toString()
-            
 
 
-            list<Expr*> terminalLjubljana{new Terminal(new Niz("A"), new Box(new Point(new Real(1), new Real(1)), new Point(new Real(1), new Real(1)), new Point(new Real(1), new Real(1)), new Point(new Real(1), new Real(1)))), new Terminal(new Niz("B"), new Box(new Point(new Real(1), new Real(1)), new Point(new Real(1), new Real(1)), new Point(new Real(1), new Real(1)), new Point(new Real(1), new Real(1)))) };
-            list<Expr*> parkiriscaLjubljana{ new Point(new Real(1), new Real(1)), new Point(new Real(1), new Real(1)) };
-            list<Expr*> letaliscaSlovenija{new Letalisce(new Niz("Ljubljana"),terminalLjubljana , new Parkirisca(new Niz("parkiriscaLjubljana"), parkiriscaLjubljana))};
-            list<Expr*> restavracijeLokacije{ new Point(new Real(1), new Real(1)), new Point(new Real(1), new Real(1)) };
+
+            //list<Expr*> terminalLjubljana{ new Terminal(new Niz("A"), new Box(new Point(new Real(1), new Real(1)), new Point(new Real(1), new Real(1)), new Point(new Real(1), new Real(1)), new Point(new Real(1), new Real(1)))), new Terminal(new Niz("B"), new Box(new Point(new Real(1), new Real(1)), new Point(new Real(1), new Real(1)), new Point(new Real(1), new Real(1)), new Point(new Real(1), new Real(1)))) };
+            //list<Expr*> parkiriscaLjubljana{ new Point(new Real(1), new Real(1)), new Point(new Real(1), new Real(1)) };
+            //list<Expr*> letaliscaSlovenija{ new Letalisce(new Niz("Ljubljana"),terminalLjubljana , new Parkirisca(new Niz("parkiriscaLjubljana"), parkiriscaLjubljana)) };
+            //list<Expr*> restavracijeLokacije{ new Point(new Real(1), new Real(1)), new Point(new Real(1), new Real(1)) };
 
 
-            string testRes = Drzava(new Niz("Slovenija"), letaliscaSlovenija, new Restavracija(restavracijeLokacije)).toString();
+            ////string testRes = Drzava(new Niz("Slovenija"), letaliscaSlovenija, new Restavracija(restavracijeLokacije)).toString();
+            //list<Expr*> testni;
 
+            //cout << testni.size();
 
-            //string testRes = Parkirisca(new Niz("A"), parkiriscaLjubljana).toString();
-            cout << "\n" << testRes << "\n";
-
+            //string testRes = Parkirisca(new Niz("A"), testni).toString();
+            //cout << "\n" << testRes << "\n";
+            //cout << "test";
         }
     }
 
