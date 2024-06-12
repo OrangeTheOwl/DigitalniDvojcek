@@ -576,26 +576,64 @@ public:
 
 
 
-    bool parse()
+    pair<bool, list<Expr*>> parse()
     {
+        pair<bool, list<Expr*>> temp = drzava();
+        pair<bool, list<Expr*>> result;
 
-        return  drzava() && lexem.currentToken().isEof() /*&& lexem.currentToken().getToken() != 12*/;
+        result.first = (temp.first && lexem.currentToken().isEof());
+        result.second = temp.second;
+
+        return  result; /*&& lexem.currentToken().getToken() != 12*/;
     }
 
-    bool drzava() {
+    pair<bool, list<Expr*>> drzava() {
 
-        if (drzavaS())
+        pair<bool, list<Expr*>> result;
+        list<Expr*> listOfAll;
+
+        pair<bool, Expr*> single = drzavaS();
+        result.first = single.first;
+        listOfAll.push_back(single.second);
+        result.second = listOfAll;
+
+        if (single.first)
         {
             if (lexem.currentToken().isEof())
             {
-                return true;
+                result.second = listOfAll;
+                return result;
             }
-            else {
-                drzava();
+            else
+            {
+                pair<bool, list<Expr*>> temp = drzava();
+                result.first = temp.first;
+                result.second.merge(temp.second);
+                return result;
             }
-
+            
         }
-        else return false;
+        else 
+        {
+            result.first = false;
+            return result;
+        }
+        
+
+
+
+        // if (drzavaS())
+        // {
+        //     if (lexem.currentToken().isEof())
+        //     {
+        //         return true;
+        //     }
+        //     else {
+        //         drzava();
+        //     }
+
+        // }
+        // else return false;
     }
 
 
@@ -604,93 +642,152 @@ public:
 
 
 
-    bool drzavaS() {
-
+    pair<bool, Expr*> drzavaS() {
+        pair<bool, Expr*> result;
         //drzava
         if (lexem.currentToken().getToken() == 13) {
             lexem.nextToken();
 
+            pair<bool, Expr*> naziv = niz();
             //naziv drzave
-            if (niz())
+            if (naziv.first)
             {
                 //begin
                 if (lexem.currentToken().getToken() == 5)
                 {
                     lexem.nextToken();
 
+                    pair<bool, list<Expr*>> seznamLetališč = letalisce();
+                    pair<bool, Expr*> seznamRestavracij = restavracija();
                     //letalisca in restavracije
-                    if (letalisce() && restavracija())
+                    if (seznamLetališč.first && seznamRestavracij.first)
                     {
                         //end
                         if (lexem.currentToken().getToken() == 6)
                         {
                             lexem.nextToken();
-                            return true;
+
+                            result.first = true;
+                            result.second = new Drzava(naziv.second, seznamLetališč.second, seznamRestavracij.second);
+                            return result;
                         }
                     }
                 }
             }
         }
         cout << "01";
-        return false;
+        result.first = false;
+        return result;
     }
 
-    bool niz() {
+    pair<bool, Expr*> niz() {
+        pair<bool, Expr*> result;
         if (isVariable())
         {
+            result.first = true;
+            result.second = new Niz(lexem.currentToken().getLexem());
             lexem.nextToken();
-            return true;
+            return result;
         }
+        result.first = false;
         cout << "02";
-        return false;
+        return result;
     }
 
-    bool letalisce() {
+    pair<bool, list<Expr*>> letalisce() {
 
-        if (letalisceS())
+        pair<bool, list<Expr*>> result;
+        list<Expr*> listOfAll;
+
+        pair<bool, Expr*> single = letalisceS();
+        result.first = single.first;
+        listOfAll.push_back(single.second);
+        result.second = listOfAll;
+
+        if (single.first)
         {
-            if (lexem.currentToken().getToken() != 19 /*letalisce*/)
+            if (lexem.currentToken().getToken() != 19)
             {
-                return true;
+                result.second = listOfAll;
+                return result;
             }
-            else {
-                letalisce();
+            else
+            {
+                pair<bool, list<Expr*>> temp = letalisce();
+                result.first = temp.first;
+                result.second.merge(temp.second);
+                return result;
             }
-
+            
         }
-        else return false;
+        else 
+        {
+            result.first = false;
+            return result;
+        }
+
+
+
+
+
+        // if (letalisceS())
+        // {
+        //     if (lexem.currentToken().getToken() != 19 /*letalisce*/)
+        //     {
+        //         return true;
+        //     }
+        //     else {
+        //         letalisce();
+        //     }
+
+        // }
+        // else return false;
     }
 
-    bool letalisceS() {
+    pair<bool, Expr*> letalisceS() {
+        pair<bool, Expr*> result;
+
         if (lexem.currentToken().getToken() == 19 /*letalisce*/)
         {
             lexem.nextToken();
-
-            if (niz())
+            
+            
+            pair<bool, Expr*> naziv = niz();
+            if (naziv.first)
             {
                 //begin
                 if (lexem.currentToken().getToken() == 5)
                 {
                     lexem.nextToken();
 
+                    pair<bool, list<Expr*>> seznamTerminalov = terminal();
+                    pair<bool, Expr*> seznamParkirisca = parkirisca();
+                    
                     //terminal in parkirisca
-                    if (terminal() && parkirisca())
+                    if (seznamTerminalov.first && seznamParkirisca.first)
                     {
                         //end
                         if (lexem.currentToken().getToken() == 6)
                         {
                             lexem.nextToken();
-                            return true;
+
+
+                            result.first = true;
+                            result.second = new Letalisce(naziv.second, seznamTerminalov.second, seznamParkirisca.second);
+                            return result;
                         }
                     }
                 }
             }
         }
         cout << "03";
-        return false;
+        result.first = false;
+        return result;
     }
 
-    bool restavracija() {
+    pair<bool, Expr*> restavracija() {
+        pair<bool, Expr*> result;
+
         if (lexem.currentToken().getToken() == 16 /*restavracija*/)
         {
             lexem.nextToken();
@@ -700,19 +797,31 @@ public:
             {
                 lexem.nextToken();
 
+                pair<bool, list<Expr*>> seznamTock = points();
                 //points
-                if (points())
+                if (seznamTock.first)
                 {
                     //end
                     if (lexem.currentToken().getToken() == 6)
                     {
                         lexem.nextToken();
-                        return true;
+
+                        result.first = true;
+                        result.second = new Restavracija(seznamTock.second);
+
+                        return result;
                     }
                 }
             }
         }
-        else return true;
+
+        
+        else 
+        {
+            result.first = false;
+            return result;
+        }
+        
     }
 
     bool terminal() {
