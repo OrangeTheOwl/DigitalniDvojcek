@@ -2,11 +2,12 @@ package service
 
 import model.WeatherInfo
 import org.openqa.selenium.By
+import org.openqa.selenium.Dimension
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.WebElement
 import org.openqa.selenium.chrome.ChromeDriver
 import org.openqa.selenium.chrome.ChromeOptions
-import util.generateRandomString
+import util.generateRandomHexString
 import java.util.concurrent.TimeUnit
 
 class WeatherService {
@@ -30,7 +31,7 @@ class WeatherService {
             eventElements.forEach{
                 val stringData : List<String> = it.text.split("\n")
                 val weatherEvent = WeatherInfo(
-                    id = generateRandomString(24),
+                    id = generateRandomHexString(24),
                     location = "6656ef9d83f28aa76711bac3",
                     status = stringData[0].trim(),
                     humidity = stringData[8].split(" ")[0].trim().toInt(),
@@ -51,7 +52,7 @@ class WeatherService {
     }
 }
 
-/*fun main() {
+fun main() {
     val weatherServiceInfo = WeatherService()
     val weatherEvents = weatherServiceInfo.fetchWeathervents()
     println("- - - - - - - - -  - --  -  --  - -")
@@ -59,4 +60,4 @@ class WeatherService {
         println(it.toString())
     }
     println("- - - - - - - - -  - --  -  --  - -")
-}*/
+}

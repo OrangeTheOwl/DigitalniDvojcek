@@ -1,5 +1,6 @@
 package service
 
+import fetchGateIdByLabel
 import it.skrape.core.htmlDocument
 import it.skrape.fetcher.HttpFetcher
 import it.skrape.fetcher.response
@@ -7,9 +8,13 @@ import it.skrape.fetcher.skrape
 import it.skrape.selects.html5.div
 import it.skrape.selects.html5.img
 import it.skrape.selects.html5.p
+import model.Airport
 import model.Flight
+import model.Gate
+import model.Location
 import util.calcTimeDiff
-import util.generateRandomString
+import util.generateRandomHexString
+import util.getRandomGate
 import util.parseDate
 
 class FlightService {
@@ -77,19 +82,26 @@ class FlightService {
                                         if (status.isEmpty()) {
                                             status = "Brez Statusa"
                                         }
+                                        val gateId : String? = if(gate.trim().isEmpty()){
+                                            getRandomGate()
+                                        }else{
+                                            fetchGateIdByLabel(gate)
+                                        }
+
+
 
                                         val timeDiff = calcTimeDiff(timePlanned, timeExact)
-
+                                        val destList = stringData[3].split(" ")
                                         val flight = Flight(
-                                            id = generateRandomString(24),
+                                            id = generateRandomHexString(24),
                                             arrivalPlanned = if (departure) null else parseDate(date, timePlanned),
                                             arrivalExact = if (departure) null else parseDate(date, timePlanned),
                                             departurePlanned = if (!departure) null else parseDate(date, timePlanned),
                                             departureExact = if (!departure) null else parseDate(date, timePlanned),
-                                            airport = "6656ff7a99a43e1ec00e8357", //id od ljubljanskega letalisca
-                                            departureChangeTime = timeDiff,
-                                            destination = stringData[3].split(" ")[0],
-                                            gate = gate,
+                                            airport = "6656ff7a99a43e1ec00e8357",
+                                            changeTime = timeDiff,
+                                            destination = if (destList.size == 3) "${destList[0].trim()} ${destList[1].trim()}" else destList[0].trim() ,
+                                            gate = gateId!!,
                                             status = status,
                                             airline = stringData[4],
                                             flightNumber = stringData[3].split(" ")[1]
@@ -110,18 +122,16 @@ class FlightService {
         }
     }
 }
-/*fun main() {
+fun main() {
     val flightService : FlightService = FlightService()
 
     val flightListDepartures : MutableList<Flight>? = flightService.fetchArrival(true)
-    val flightListArrivals : MutableList<Flight>? = flightService.fetchArrival(false)
 
     println("Number of flights departure: " + flightListDepartures?.size)
-    println("Number of flights arrival: " + flightListArrivals?.size)
 
     flightListDepartures?.forEach{
         println("------------------------------------")
         println(it.toString())
         println("------------------------------------")
     }
-}*/
+}
