@@ -1,7 +1,9 @@
 package model
 
+import com.google.gson.annotations.SerializedName
+
 data class WeatherInfo (
-    val id: String,
+    @SerializedName("_id") val id: String,
     val location: String,
     val temperature: Int,
     val humidity: Int,

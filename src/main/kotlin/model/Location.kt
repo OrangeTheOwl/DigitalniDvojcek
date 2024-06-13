@@ -1,9 +1,11 @@
 package model
 
+import com.google.gson.annotations.SerializedName
+
 
 data class Location(
-    val id: String,
-    val address: String,
-    val city: String,
-    val postalCode: String
+    @SerializedName("_id") val id: String,
+    val address: String? = null,
+    val city: String? = null,
+    val postalCode: String? = null
 )

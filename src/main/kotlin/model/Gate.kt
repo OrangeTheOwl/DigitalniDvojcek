@@ -1,7 +1,9 @@
 package model
 
+import com.google.gson.annotations.SerializedName
+
 
 data class Gate(
-    val id: String,
+    @SerializedName("_id") val id: String? = null,
     val label: String
 )
