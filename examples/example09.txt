@@ -1,0 +1,12 @@
+drz Slovenija {
+            let LetalisceLjubljana {
+                ter A {
+                    box((100,100)(100,105)(105,105)(105,100))
+                }
+            }
+            let LetalisceCelje {
+                ter A {
+                    box((100,100)(100,105)(105,105)(105,100))
+                }
+            }
+        }

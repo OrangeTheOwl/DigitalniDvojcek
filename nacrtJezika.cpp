@@ -2,16 +2,16 @@
 
 1. Osnova
 
-    Želimo, da je naš jezik sposoben zajeti letališča v državi, ter znotraj letališča vse njegove terminale gates.
+    Želimo, da je naš jezik sposoben zajeti letališča v državi, ter znotraj letališča vse njegove tere gates.
     Po potrebi bi za vsako državo prikazali restavracije v njej, ter za vsako letališče pripadajoča parkirišča.
 
     drzava Slovenija {
-        letalisce LetališčeLjubljana {
-            terminal A {
-                box((3,2),(5,3),(3,2),(5,3))
+        letalisce LetalisceLjubljana {
+            ter A {
+                box((100,100)(100,105)(105,105)(105,100))
             }
-            terminal B {
-                box((3,2),(5,3),(3,2),(5,3))
+            ter B {
+                box((100,100)(100,105)(105,105)(105,100))
             }
         }
     }
@@ -44,7 +44,7 @@
                     BLOK
                 }
 
-                terminali NAZIV {
+                teri NAZIV {
                     UKAZI
                 }
 
@@ -52,7 +52,7 @@
                     UKAZI
                 }
 
-                parkirisca NAZIV {
+                par NAZIV {
                     UKAZI
                 }
 
@@ -71,7 +71,7 @@
             UKAZI
         }
         
-        Parkirisca NAZIV {
+        par NAZIV {
             UKAZI
         }
 
@@ -104,15 +104,15 @@
 
         LETALISCE ::= LETALISCE' LETALISCE | Ɛ
 
-        LETALISCE' ::= let NIZ {TERMINAL PARKIRISCA}
+        LETALISCE' ::= let NIZ {ter par}
 
-        TERMINAL ::= TERMINAL' TERMINAL | Ɛ
+        ter ::= ter' ter | Ɛ
 
-        TERMINAL' ::= ter NIZ { UKAZ_TERMINAL }
+        ter' ::= ter NIZ { UKAZ_ter }
 
-        UKAZ_TERMINAL ::= box ( TOCKA TOCKA TOCKA TOCKA )
+        UKAZ_ter ::= box ( TOCKA TOCKA TOCKA TOCKA )
 
-        PARKIRISCA ::= par NIZ { POINTS } |  Ɛ
+        par ::= par NIZ { POINTS } |  Ɛ
 
         POINTS ::= POINTS' POINTS | Ɛ
 
@@ -124,7 +124,7 @@
 
         NIZ ::= {A,...,Z,a,...,z}+
 
-    3.2 Terminalni simboli
+    3.2 terni simboli
 
         number = {0,...,9}+(.{0,...,9}+)?
         niz = {A,...,Z,a,...,z}+
@@ -136,8 +136,8 @@
         Drzava = drz
         Restavracija = res
         Letalisce = let
-        Terminal = ter
-        Parkirisca = par
+        ter = ter
+        par = par
         Point = point
         Box = box
         skip = {\t, \n, \r, ' '}
@@ -148,76 +148,76 @@
 
     4.1
         drz Slovenija {
-            let LetališčeLjubljana {
+            let LetalisceLjubljana {
                 ter A {
-                    box((3,2)(3,4)(4,4)(4,2))
+                    box((100,100)(100,105)(105,105)(105,100))
                 }
             }
         }
-        drz Hrvaška {
+        drz Hrvaska {
             let Zagreb {
                 ter A {
-                    box((3,2)(3,4)(4,4)(4,2))
+                    box((100,100)(100,105)(105,105)(105,100))
                 }
             }
         }
 
     4.2
         drz Slovenija {
-            let LetališčeLjubljana {
-                terminal A {
-                    box((3,2)(3,4)(4,4)(4,2))
+            let LetalisceLjubljana {
+                ter A {
+                    box((100,100)(100,105)(105,105)(105,100))
                 }
-                terminal B {
-                    box((3,2)(3,4)(4,4)(4,2))
+                ter B {
+                    box((100,100)(100,105)(105,105)(105,100))
                 }
-                terminal C {
-                    box((3,2)(3,4)(4,4)(4,2))
+                ter C {
+                    box((100,100)(100,105)(105,105)(105,100))
                 }
-                terminal D {
-                    box((3,2)(3,4)(4,4)(4,2))
+                ter D {
+                    box((100,100)(100,105)(105,105)(105,100))
                 }
             }
         }
 
     4.3
         drz Slovenija {
-            let LetališčeLjubljana {
-                terminal A {
-                    box((3,2)(3,4)(4,4)(4,2))
+            let LetalisceLjubljana {
+                ter A {
+                    box((100,100)(100,105)(105,105)(105,100))
                 }
-                terminal B {
-                    box((3,2)(3,4)(4,4)(4,2))
+                ter B {
+                    box((100,100)(100,105)(105,105)(105,100))
                 }
-                terminal C {
-                    box((3,2)(3,4)(4,4)(4,2))
+                ter C {
+                    box((100,100)(100,105)(105,105)(105,100))
                 }
-                terminal D {
-                    box((3,2)(3,4)(4,4)(4,2))
+                ter D {
+                    box((100,100)(100,105)(105,105)(105,100))
                 }
             }
-            res Restavracije {
+            res {
                 point(1,1)
             }
         }
 
     4.4
         drz Slovenija {
-            let LetališčeLjubljana {
-                terminal A {
-                    box((3,2)(3,4)(4,4)(4,2))
+            let LetalisceLjubljana {
+                ter A {
+                    box((100,100)(100,105)(105,105)(105,100))
                 }
-                terminal B {
-                    box((3,2)(3,4)(4,4)(4,2))
+                ter B {
+                    box((100,100)(100,105)(105,105)(105,100))
                 }
-                terminal C {
-                    box((3,2)(3,4)(4,4)(4,2))
+                ter C {
+                    box((100,100)(100,105)(105,105)(105,100))
                 }
-                terminal D {
-                    box((3,2)(3,4)(4,4)(4,2))
+                ter D {
+                    box((100,100)(100,105)(105,105)(105,100))
                 }
             }
-            res Restavracije {
+            res {
                 point(1,1)
                 point(1,1)
                 point(1,1)
@@ -228,20 +228,20 @@
 
     4.5
         drz Slovenija {
-            let LetališčeLjubljana {
-                terminal A {
-                    box((3,2)(3,4)(4,4)(4,2))
+            let LetalisceLjubljana {
+                ter A {
+                    box((100,100)(100,105)(105,105)(105,100))
                 }
-                terminal B {
-                    box((3,2)(3,4)(4,4)(4,2))
+                ter B {
+                    box((100,100)(100,105)(105,105)(105,100))
                 }
-                terminal C {
-                    box((3,2)(3,4)(4,4)(4,2))
+                ter C {
+                    box((100,100)(100,105)(105,105)(105,100))
                 }
-                terminal D {
-                    box((3,2)(3,4)(4,4)(4,2))
+                ter D {
+                    box((100,100)(100,105)(105,105)(105,100))
                 }
-                parkirisca Ljubljana{
+                par Ljubljana{
                     point(1,1)
                 }
             }
@@ -256,39 +256,40 @@
 
     4.6
         drz Slovenija {
-            let LetališčeLjubljana {
-                terminal A {
-                    box((3,2)(3,4)(4,4)(4,2))
+            let LetalisceLjubljana {
+                ter A {
+                    box((100,100)(100,105)(105,105)(105,100))
                 }
-                terminal B {
-                    box((3,2)(3,4)(4,4)(4,2))
+                ter B {
+                    box((100,100)(100,105)(105,105)(105,100))
                 }
-                terminal C {
-                    box((3,2)(3,4)(4,4)(4,2))
+                ter C {
+                    box((100,100)(100,105)(105,105)(105,100))
                 }
-                terminal D {
-                    box((3,2)(3,4)(4,4)(4,2))
+                ter D {
+                    box((100,100)(100,105)(105,105)(105,100))
                 }
-                parkirisca LetališčeLjubljana{
-                    point(1,1)
-                    point(1,1)
-                    point(1,1)
-                    point(1,1)
+                par LetalisceLjubljana{
+                    point(3,3)
+                point(4,4)
+                point(5,5)
+                point(6,6)
+                point(7,7)
                 }
             }
             res {
-                point(1,1)
-                point(1,1)
-                point(1,1)
-                point(1,1)
-                point(1,1)
+                point(3,3)
+                point(4,4)
+                point(5,5)
+                point(6,6)
+                point(7,7)
             }
         }
     4.7
         drz Slovenija {
             let Ljubljana {
                 ter A {
-                    box((3,2)(3,4)(4,4)(4,2))
+                    box((100,100)(100,105)(105,105)(105,100))
                 }
                 par Ljubljana{
                     point(1,1)
@@ -302,20 +303,20 @@
         }
     4.8
         drz Slovenija {
-            let LetališčeLjubljana {
-                terminal A {
-                    box((3,2)(3,4)(4,4)(4,2))
+            let LetalisceLjubljana {
+                ter A {
+                    box((100,100)(100,105)(105,105)(105,100))
                 }
                 par Ljubljana{
                     point(1,1)
                     point(1,1)
                 }
             }
-            let LetališčeCelje {
-                terminal A {
-                    box((3,2)(3,4)(4,4)(4,2))
+            let LetalisceCelje {
+                ter A {
+                    box((100,100)(100,105)(105,105)(105,100))
                 }
-                par LetališčeCelje{
+                par LetalisceCelje{
                     point(1,1)
                     point(1,1)
                 }
@@ -328,31 +329,31 @@
         }
     4.9
         drz Slovenija {
-            let LetališčeLjubljana {
-                terminal A {
-                    box((3,2)(3,4)(4,4)(4,2))
+            let LetalisceLjubljana {
+                ter A {
+                    box((100,100)(100,105)(105,105)(105,100))
                 }
             }
-            let LetališčeCelje {
-                terminal A {
-                    box((3,2)(3,4)(4,4)(4,2))
+            let LetalisceCelje {
+                ter A {
+                    box((100,100)(100,105)(105,105)(105,100))
                 }
             }
         }
     4.10
         drz Slovenija {
-            let LetališčeLjubljana {
-                terminal A {
-                    box((3,2)(3,4)(4,4)(4,2))
+            let LetalisceLjubljana {
+                ter A {
+                    box((100,100)(100,105)(105,105)(105,100))
                 }
                 par a {
                     point(1,1)
                     point(1,1.5)
                 }
             }
-            let LetališčeCelje {
-                terminal A {
-                    box((3,2)(3,4)(4,4)(4,2))
+            let LetalisceCelje {
+                ter A {
+                    box((100,100)(100,105)(105,105)(105,100))
                 }
             }
             res {

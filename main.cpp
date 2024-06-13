@@ -32,21 +32,21 @@ public:
 
     string toString() override
     {
-        cout << "___1";
+        //cout << "___1";
         string out = "drz " + name->toString() + " { ";
 
         for (Expr* let : letalisca) {
-            cout << "___2";
+            //cout << "___2";
             out += let->toString();
         }
         if (restavracije == NULL)
         {
-            out += " }"; 
+            out += " }";
             return out;
         }
 
         out += restavracije->toString();
-        cout << "___3";
+        //cout << "___3";
         out += " }";
 
         return out;
@@ -63,7 +63,7 @@ public:
         {
             return out;
         }
-        
+
         out += restavracije->toGeoJSON(name, NULL);
         out += ",";
 
@@ -89,9 +89,9 @@ public:
     {
         string out = "let " + name->toString() + " { ";
 
-        cout << "___4";
+        //cout << "___4";
         for (Expr* ter : terminali) {
-            cout << "___5";
+            //cout << "___5";
             out += ter->toString();
         }
 
@@ -102,7 +102,7 @@ public:
         }
 
         out += parkirisca->toString();
-        cout << "___6";
+        //cout << "___6";
         out += " }";
         return out;
     }
@@ -111,12 +111,12 @@ public:
     string toGeoJSON(Expr* drzava, Expr* letalisce) override
     {
         string out = "";
-        cout << "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" + terminali.size() ;
+        //cout << "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" + terminali.size();
         for (Expr* ter : terminali) {
             out += ter->toGeoJSON(drzava, name);
             out += ",";
         }
-        
+
 
         if (parkirisca == NULL)
         {
@@ -142,12 +142,12 @@ public:
     string toString() override
     {
         string out = "res { ";
-        cout << "___7";
+        //cout << "___7";
         for (Expr* res : lokacije) {
-            cout << "___8";
+            //cout << "___8";
             out += "point " + res->toString();
         }
-        cout << "___9";
+        //cout << "___9";
         out += " }";
         return out;
     }
@@ -155,7 +155,7 @@ public:
     string toGeoJSON(Expr* drzava, Expr* letalisce) override
     {
         string out = "{\n \"type\": \"Feature\",\n\"geometry\": {\n\"type\": \"MultiPoint\",\n\"coordinates\":[\n";
-        
+
         for (Expr* lok : lokacije) {
             out += lok->toGeoJSON(NULL, NULL);
             out += ",";
@@ -182,9 +182,9 @@ public:
     string toString() override
     {
         string out = "ter " + name->toString() + " { ";
-        cout << "___10";
+        //cout << "___10";
         out += box->toString();
-        cout << "___11";
+        //cout << "___11";
         out += " }";
         return out;
     }
@@ -195,7 +195,7 @@ public:
 
         out += box->toGeoJSON(NULL, NULL);
 
-        out += "]\n]\n},\n\"properties\":{\n\"id\":\"terminal\",\n\"drzava\": \"" + drzava->toString() + "\",\n\"letalisce\": \"" +letalisce->toString() +  "\",\n\"naziv\": \"" + name->toString() +"\"\n }\n }";
+        out += "]\n]\n},\n\"properties\":{\n\"id\":\"terminal\",\n\"drzava\": \"" + drzava->toString() + "\",\n\"letalisce\": \"" + letalisce->toString() + "\",\n\"naziv\": \"" + name->toString() + "\"\n }\n }";
         return out;
     }
 };
@@ -216,12 +216,12 @@ public:
         if (lokacije.size() != 0)
         {
             string out = "par " + name->toString() + " { ";
-            cout << "___12";
+            //cout << "___12";
             for (Expr* res : lokacije) {
-                cout << "___13";
+                //cout << "___13";
                 out += "point " + res->toString();
             }
-            cout << "___14";
+            //cout << "___14";
             out += " }";
             return out;
         }
@@ -229,7 +229,7 @@ public:
         {
             return "";
         }
-        
+
     }
 
     string toGeoJSON(Expr* drzava, Expr* letalisce) override
@@ -260,9 +260,9 @@ public:
 
     string toString() override
     {
-        cout << "___15";
+        //cout << "___15";
         string out = "( " + left->toString() + ", " + right->toString() + " )";
-        cout << "___16";
+        //cout << "___16";
         return out;
     }
 
@@ -290,14 +290,14 @@ public:
 
     string toString() override
     {
-        cout << "___17";
+        //cout << "___17";
         string out = "box (" + pointOne->toString() + pointTwo->toString() + pointThree->toString() + pointFour->toString() + " ) ";
-        cout << "___18";
+        //cout << "___18";
         return out;
     }
     string toGeoJSON(Expr* drzava, Expr* letalisce) override
     {
-        string out = pointOne->toGeoJSON(NULL, NULL) +",\n" + pointTwo->toGeoJSON(NULL, NULL) + ",\n" + pointThree->toGeoJSON(NULL, NULL) + ",\n" + pointFour->toGeoJSON(NULL, NULL) + ",\n" + pointOne->toGeoJSON(NULL, NULL) + "\n";
+        string out = pointOne->toGeoJSON(NULL, NULL) + ",\n" + pointTwo->toGeoJSON(NULL, NULL) + ",\n" + pointThree->toGeoJSON(NULL, NULL) + ",\n" + pointFour->toGeoJSON(NULL, NULL) + ",\n" + pointOne->toGeoJSON(NULL, NULL) + "\n";
         return out;
     }
 
@@ -314,7 +314,7 @@ public:
 
     string toString() override
     {
-        cout << "___19";
+        //cout << "___19";
         return to_string(val);
     }
     string toGeoJSON(Expr* drzava, Expr* letalisce) override
@@ -335,7 +335,7 @@ public:
 
     string toString() override
     {
-        cout << "___20";
+        //cout << "___20";
         return val;
     }
     string toGeoJSON(Expr* drzava, Expr* letalisce) override
@@ -567,7 +567,7 @@ protected:
 protected:
     int peek()
     {
-        //cout << "peek: " << input->peek() << endl;
+        ////cout << "peek: " << input->peek() << endl;
         return input->peek();
     }
     int read()
@@ -596,8 +596,8 @@ protected:
         do
         {
             int tempState = getNextState(currentState, peek());
-            //cout << peek() << endl;
-            ////cout << "test: " << tempState;
+            ////cout << peek() << endl;
+            //////cout << "test: " << tempState;
             if (tempState != noEdge)
             {
                 /*if (tempState == tSeperator)
@@ -606,7 +606,7 @@ protected:
                 }*/
                 currentState = tempState;
                 lexem += (char)read();
-                ////cout << "lexem: " << lexem<< endl;
+                //////cout << "lexem: " << lexem<< endl;
                 temp = tempState;
 
                 //check if state is finite? and if yes return lexem? or output lexxem and go to next token
@@ -661,7 +661,7 @@ public:
 
         } while (lastToken.getToken() == 10);
 
-        cout << lastToken << endl;
+        //cout << lastToken << endl;
         return lastToken;
     }
     Token currentToken()
@@ -701,7 +701,7 @@ public:
         }
         else
         {
-            cout << lexem.currentToken();
+            //cout << lexem.currentToken();
             return false;
         }
     }
@@ -807,7 +807,7 @@ public:
                 }
             }
         }
-        cout << "01";
+        //cout << "01";
         result.first = false;
         return result;
     }
@@ -822,7 +822,7 @@ public:
             return result;
         }
         result.first = false;
-        cout << "02";
+        //cout << "02";
         return result;
     }
 
@@ -908,7 +908,7 @@ public:
 
                             if (seznamParkirisca.second == NULL)
                             {
-                                cout << "aaaaaaaaaaaaaaa";
+                                //cout << "aaaaaaaaaaaaaaa";
                             }
 
                             result.second = new Letalisce(naziv.second, seznamTerminalov.second, seznamParkirisca.second);
@@ -919,7 +919,7 @@ public:
                 }
             }
         }
-        cout << "03";
+        //cout << "03";
         result.first = false;
         return result;
     }
@@ -955,7 +955,7 @@ public:
         }
 
 
-        result.first = false;
+        result.first = true;
         return result;
 
     }
@@ -1042,20 +1042,20 @@ public:
 
                             return result;
                         }
-                        cout << "044444";
+                        //cout << "044444";
                         result.first = false;
                         return result;
                     }
-                    cout << "0444";
+                    //cout << "0444";
                     result.first = false;
                     return result;
                 }
-                cout << "044";
+                //cout << "044";
                 result.first = false;
                 return result;
             }
         }
-        cout << "04";
+        //cout << "04";
         result.first = false;
         return result;
     }
@@ -1135,7 +1135,7 @@ public:
                 }
             }
         }
-        cout << "05";
+        //cout << "05";
         result.first = false;
         return result;
     }
@@ -1201,7 +1201,7 @@ public:
                 return result;
             }
         }
-        cout << "06";
+        //cout << "06";
         result.first = false;
         return result;
     }
@@ -1230,16 +1230,16 @@ public:
 
                             return result;
                         }
-                        cout << "/074/";
+                        //cout << "/074/";
                     }
-                    cout << "/073/";
+                    //cout << "/073/";
                 }
-                cout << "/072/";
+                //cout << "/072/";
             }
-            cout << "/071/";
+            //cout << "/071/";
 
         }
-        cout << "07";
+        //cout << "07";
         result.first = false;
         return result;
 
@@ -1256,7 +1256,7 @@ public:
             return result;
         }
         result.first = false;
-        cout << "02";
+        //cout << "02";
         return result;
 
 
@@ -1265,7 +1265,7 @@ public:
         //     lexem.nextToken();
         //     return true;
         // }
-        // cout << "08";
+        // //cout << "08";
         // return false;
     }
 
@@ -1290,7 +1290,7 @@ int main(int argc, char* argv[])
 {
     if (argc != 3)
     {
-        cout << "Stevilo argumentov ni pravilno" << endl;
+        //cout << "Stevilo argumentov ni pravilno" << endl;
         return -1;
     }
     else
@@ -1357,36 +1357,36 @@ int main(int argc, char* argv[])
             //     if (m[temp.currentToken().getToken()] != "skip")
             //     {
             //         outputText = outputText + m[temp.currentToken().getToken()] + "(\"" + temp.currentToken().getLexem() + "\") ";
-            //         //cout << m[temp.currentToken().getToken()] << "(" << temp.currentToken().getLexem() << ") " << endl;
+            //         ////cout << m[temp.currentToken().getToken()] << "(" << temp.currentToken().getLexem() << ") " << endl;
             //     }
-            //     //cout << temp.currentToken();
-            //     //cout << temp.currentToken() << endl;
+            //     ////cout << temp.currentToken();
+            //     ////cout << temp.currentToken() << endl;
             //     token = temp.nextToken();
             // }
             // if (m[temp.currentToken().getToken()] != "skip")
             // {
             //     outputText = outputText + m[temp.currentToken().getToken()] + "(\"" + temp.currentToken().getLexem() + "\") ";
-            //     //cout << m[temp.currentToken().getToken()] << "(" << temp.currentToken().getLexem() << ") " << endl;
+            //     ////cout << m[temp.currentToken().getToken()] << "(" << temp.currentToken().getLexem() << ") " << endl;
             // }
 
             Parser test(temp);
 
             string outputText = "";
-
+            string outputString = "";
             pair<bool, list<Expr*>> izraz = test.parse();
             if (izraz.first)
             {
                 outputText = "accept";
                 cout << "true\n";
-                
+
                 //list<Expr*> rez = izraz.second;
 
-                string outputString = GenerateGeoJson(izraz.second);
+                outputString = GenerateGeoJson(izraz.second);
                 /*for (Expr* element : rez) {
                     outputString += element->toGeoJSON(NULL, NULL);
                 }*/
                 cout << outputString << endl;
-              /*  cout << "test";*/
+                /*  //cout << "test";*/
             }
             else
             {
@@ -1397,7 +1397,7 @@ int main(int argc, char* argv[])
             ofstream output(outputFile);
             if (output)
             {
-                output << outputText;
+                output << outputString;
 
                 output.close();
             }
@@ -1416,11 +1416,11 @@ int main(int argc, char* argv[])
             ////string testRes = Drzava(new Niz("Slovenija"), letaliscaSlovenija, new Restavracija(restavracijeLokacije)).toString();
             //list<Expr*> testni;
 
-            //cout << testni.size();
+            ////cout << testni.size();
 
             //string testRes = Parkirisca(new Niz("A"), testni).toString();
-            //cout << "\n" << testRes << "\n";
-            //cout << "test";
+            ////cout << "\n" << testRes << "\n";
+            ////cout << "test";
         }
     }
 

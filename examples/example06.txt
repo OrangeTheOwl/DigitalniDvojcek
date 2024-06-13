@@ -1,0 +1,30 @@
+drz Slovenija {
+            let LetalisceLjubljana {
+                ter A {
+                    box((100,100)(100,105)(105,105)(105,100))
+                }
+                ter B {
+                    box((100,100)(100,105)(105,105)(105,100))
+                }
+                ter C {
+                    box((100,100)(100,105)(105,105)(105,100))
+                }
+                ter D {
+                    box((100,100)(100,105)(105,105)(105,100))
+                }
+                par LetalisceLjubljana{
+                    point(3,3)
+                point(4,4)
+                point(5,5)
+                point(6,6)
+                point(7,7)
+                }
+            }
+            res {
+                point(3,3)
+                point(4,4)
+                point(5,5)
+                point(6,6)
+                point(7,7)
+            }
+        }
