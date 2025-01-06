@@ -9,11 +9,13 @@ import com.mongodb.client.MongoDatabase;
 
 import org.bson.Document;
 
+import io.github.some_example_name.common.Secrets;
+
 public class DatabaseUtil {
     public static void main( String[] args ) {
 
         // Replace the placeholder with your MongoDB deployment's connection string
-        String uri = "";
+        String uri = Secrets.DatabaseKey;
 
         try (MongoClient mongoClient = MongoClients.create(uri)) {
             MongoDatabase database = mongoClient.getDatabase("website");
