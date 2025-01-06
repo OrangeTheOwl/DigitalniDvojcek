@@ -1,0 +1,9 @@
+planeAtlas.png
+size:2048,512
+repeat:none
+airplaneLeft
+bounds:1481,85,348,349
+airplaneRight
+bounds:772,81,707,353
+backround
+bounds:2,2,768,432
