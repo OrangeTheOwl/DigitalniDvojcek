@@ -42,7 +42,15 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.camera.view)
     testImplementation(libs.junit)
+
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    implementation("androidx.camera:camera-camera2:1.4.1")
+    implementation ("androidx.camera:camera-core:1.4.1")
+    implementation ("com.google.code.gson:gson:2.11.0")
+    implementation ("org.apache.commons:commons-io:1.3.2")
+    implementation ("com.squareup.picasso:picasso:2.71828")
+    implementation ("org.mongodb:mongodb-driver-sync:5.2.1")
 }
