@@ -52,5 +52,5 @@ dependencies {
     implementation ("com.google.code.gson:gson:2.11.0")
     implementation ("org.apache.commons:commons-io:1.3.2")
     implementation ("com.squareup.picasso:picasso:2.71828")
-    implementation ("org.mongodb:mongodb-driver-sync:5.2.1")
+
 }
