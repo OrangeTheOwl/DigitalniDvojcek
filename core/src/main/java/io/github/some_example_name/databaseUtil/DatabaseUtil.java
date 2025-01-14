@@ -15,7 +15,7 @@ public class DatabaseUtil {
     public static void main( String[] args ) {
 
         // Replace the placeholder with your MongoDB deployment's connection string
-        String uri = Secrets.DatabaseKey;
+        String uri = Secrets.KEY;
 
         try (MongoClient mongoClient = MongoClients.create(uri)) {
             MongoDatabase database = mongoClient.getDatabase("website");
