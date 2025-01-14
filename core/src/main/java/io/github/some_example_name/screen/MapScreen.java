@@ -20,6 +20,7 @@ import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -27,13 +28,22 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.swing.Icon;
 
 import io.github.some_example_name.Main;
 import io.github.some_example_name.assetUtil.AssetDescriptors;
+import io.github.some_example_name.classes.Airport;
 import io.github.some_example_name.config.GameConfig;
+import io.github.some_example_name.databaseUtil.DatabaseUtil;
 import io.github.some_example_name.utils.Constants;
+import io.github.some_example_name.utils.Geocoding;
 import io.github.some_example_name.utils.Geolocation;
 import io.github.some_example_name.utils.MapRasterTiles;
+import io.github.some_example_name.utils.Markers;
 import io.github.some_example_name.utils.ZoomXY;
 
 public class MapScreen extends ScreenAdapter implements GestureDetector.GestureListener {
@@ -47,6 +57,7 @@ public class MapScreen extends ScreenAdapter implements GestureDetector.GestureL
     private TextureAtlas gameplayAtlas;
 
     private ShapeRenderer shapeRenderer;
+
     private Vector3 touchPosition;
 
     private TiledMap tiledMap;
@@ -62,6 +73,7 @@ public class MapScreen extends ScreenAdapter implements GestureDetector.GestureL
     // test marker
     private final Geolocation MARKER_GEOLOCATION = new Geolocation(46.559070, 15.638100);
 
+    private List<Airport> airports = new ArrayList<Airport>();
 
     public MapScreen(Main game) {
         this.game = game;
@@ -70,6 +82,9 @@ public class MapScreen extends ScreenAdapter implements GestureDetector.GestureL
 
     @Override
     public void show() {
+        airports = DatabaseUtil.getAirportLocations();
+        System.out.println("Num of airports: " + airports.size());
+
 
         shapeRenderer = new ShapeRenderer();
 
@@ -89,6 +104,7 @@ public class MapScreen extends ScreenAdapter implements GestureDetector.GestureL
             mapTiles = MapRasterTiles.getRasterTileZone(centerTile, Constants.NUM_TILES);
             //you need the beginning tile (tile on the top left corner) to convert geolocation to a location in pixels.
             beginTile = new ZoomXY(Constants.ZOOM, centerTile.x - ((Constants.NUM_TILES - 1) / 2), centerTile.y - ((Constants.NUM_TILES - 1) / 2));
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -110,6 +126,7 @@ public class MapScreen extends ScreenAdapter implements GestureDetector.GestureL
 
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
 
+
     }
 
     /*@Override
@@ -120,7 +137,13 @@ public class MapScreen extends ScreenAdapter implements GestureDetector.GestureL
     public void render(float delta) {
         ScreenUtils.clear(0, 0, 0, 1);
 
-        handleInput();
+        try {
+            handleInput();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
 
         camera.update();
 
@@ -128,17 +151,38 @@ public class MapScreen extends ScreenAdapter implements GestureDetector.GestureL
         tiledMapRenderer.render();
 
         drawMarkers();
+        drawAirportMarkers();
+
     }
 
     private void drawMarkers() {
         Vector2 marker = MapRasterTiles.getPixelPosition(MARKER_GEOLOCATION.lat, MARKER_GEOLOCATION.lng, beginTile.x, beginTile.y);
+
 
         shapeRenderer.setProjectionMatrix(camera.combined);
         shapeRenderer.setColor(Color.RED);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.circle(marker.x, marker.y, 10);
         shapeRenderer.end();
+
+
+
     }
+
+    private void drawAirportMarkers() {
+        for (Airport a : airports){
+            Vector2 marker = MapRasterTiles.getPixelPosition(a.location.lat, a.location.lng, beginTile.x, beginTile.y);
+
+            shapeRenderer.setProjectionMatrix(camera.combined);
+            shapeRenderer.setColor(Color.RED);
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+            shapeRenderer.circle(marker.x, marker.y, 10);
+            shapeRenderer.end();
+        }
+
+    }
+
+
 
 
     @Override
@@ -193,7 +237,7 @@ public class MapScreen extends ScreenAdapter implements GestureDetector.GestureL
 
     }
 
-    private void handleInput() {
+    private void handleInput() throws IOException, InterruptedException {
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
             camera.zoom += 0.02;
         }
@@ -212,8 +256,12 @@ public class MapScreen extends ScreenAdapter implements GestureDetector.GestureL
         if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
             camera.translate(0, 3, 0);
         }
+        if (Gdx.input.isKeyPressed(Input.Keys.T)){
+            Texture test = Markers.getMarkerIcon();
 
-        camera.zoom = MathUtils.clamp(camera.zoom, 0.5f, 2f);
+        }
+
+        camera.zoom = MathUtils.clamp(camera.zoom, 0.2f, 2f);
 
         float effectiveViewportWidth = camera.viewportWidth * camera.zoom;
         float effectiveViewportHeight = camera.viewportHeight * camera.zoom;
