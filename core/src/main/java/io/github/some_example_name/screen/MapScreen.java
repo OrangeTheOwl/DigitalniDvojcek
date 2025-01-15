@@ -2,6 +2,7 @@ package io.github.some_example_name.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
@@ -36,6 +37,7 @@ import javax.swing.Icon;
 
 import io.github.some_example_name.Main;
 import io.github.some_example_name.assetUtil.AssetDescriptors;
+import io.github.some_example_name.assetUtil.RegionNames;
 import io.github.some_example_name.classes.Airport;
 import io.github.some_example_name.config.GameConfig;
 import io.github.some_example_name.databaseUtil.DatabaseUtil;
@@ -46,7 +48,7 @@ import io.github.some_example_name.utils.MapRasterTiles;
 import io.github.some_example_name.utils.Markers;
 import io.github.some_example_name.utils.ZoomXY;
 
-public class MapScreen extends ScreenAdapter implements GestureDetector.GestureListener {
+public class MapScreen extends ScreenAdapter implements GestureDetector.GestureListener, InputProcessor {
     private final Main game;
     private final AssetManager assetManager;
 
@@ -60,6 +62,7 @@ public class MapScreen extends ScreenAdapter implements GestureDetector.GestureL
 
     private Vector3 touchPosition;
 
+    private Texture markerIcon = new Texture("assets/rawImages/marker.png");
     private TiledMap tiledMap;
     private TiledMapRenderer tiledMapRenderer;
     private OrthographicCamera camera;
@@ -84,7 +87,7 @@ public class MapScreen extends ScreenAdapter implements GestureDetector.GestureL
     public void show() {
         airports = DatabaseUtil.getAirportLocations();
         System.out.println("Num of airports: " + airports.size());
-
+        gameplayAtlas = assetManager.get(AssetDescriptors.GAMEPLAY);
 
         shapeRenderer = new ShapeRenderer();
 
@@ -125,7 +128,7 @@ public class MapScreen extends ScreenAdapter implements GestureDetector.GestureL
         layers.add(layer);
 
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
-
+        Gdx.input.setInputProcessor(this);
 
     }
 
@@ -151,13 +154,22 @@ public class MapScreen extends ScreenAdapter implements GestureDetector.GestureL
         tiledMapRenderer.render();
 
         drawMarkers();
+
+
+        game.getBatch().begin();
+       /* Vector2 marker = MapRasterTiles.getPixelPosition(MARKER_GEOLOCATION.lat, MARKER_GEOLOCATION.lng, beginTile.x, beginTile.y);
+
+        game.getBatch().draw(markerIcon,marker.x - markerIcon.getWidth()/2f ,marker.y);
+        System.out.println("batch " + marker.x + " " + marker.y);*/
+        game.getBatch().setProjectionMatrix(camera.combined);
         drawAirportMarkers();
+        game.getBatch().end();
 
     }
 
     private void drawMarkers() {
         Vector2 marker = MapRasterTiles.getPixelPosition(MARKER_GEOLOCATION.lat, MARKER_GEOLOCATION.lng, beginTile.x, beginTile.y);
-
+        //System.out.println("shape " + marker.x + " " + marker.y);
 
         shapeRenderer.setProjectionMatrix(camera.combined);
         shapeRenderer.setColor(Color.RED);
@@ -171,13 +183,19 @@ public class MapScreen extends ScreenAdapter implements GestureDetector.GestureL
 
     private void drawAirportMarkers() {
         for (Airport a : airports){
+
+            Vector2 marker = MapRasterTiles.getPixelPosition(a.location.lat, a.location.lng, beginTile.x, beginTile.y);
+
+            game.getBatch().draw(markerIcon,marker.x - markerIcon.getWidth()/2f ,marker.y);
+            //System.out.println("batch " + marker.x + " " + marker.y);
+/*
             Vector2 marker = MapRasterTiles.getPixelPosition(a.location.lat, a.location.lng, beginTile.x, beginTile.y);
 
             shapeRenderer.setProjectionMatrix(camera.combined);
             shapeRenderer.setColor(Color.RED);
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
             shapeRenderer.circle(marker.x, marker.y, 10);
-            shapeRenderer.end();
+            shapeRenderer.end();*/
         }
 
     }
@@ -269,4 +287,72 @@ public class MapScreen extends ScreenAdapter implements GestureDetector.GestureL
         camera.position.x = MathUtils.clamp(camera.position.x, effectiveViewportWidth / 2f, Constants.MAP_WIDTH - effectiveViewportWidth / 2f);
         camera.position.y = MathUtils.clamp(camera.position.y, effectiveViewportHeight / 2f, Constants.MAP_HEIGHT - effectiveViewportHeight / 2f);
     }
+
+    @Override
+    public boolean keyDown(int keycode) {
+        return false;
+    }
+
+    @Override
+    public boolean keyUp(int keycode) {
+        return false;
+    }
+
+    @Override
+    public boolean keyTyped(char character) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        System.out.println("Clicked on " + screenX + " " + screenY);
+        Vector3 temp = new Vector3();
+        temp.set(screenX,screenY,0);
+        camera.unproject(temp);
+        System.out.println("Clicked on unprojected " + temp.x + " " + temp.y);
+        Vector2 clicked = MapRasterTiles.getPixelPosition(screenX, screenY, beginTile.x, beginTile.y);
+        System.out.println("Clicked on " + clicked.x + " " + clicked.y);
+        for (Airport a : airports){
+            Vector2 airportMarker = MapRasterTiles.getPixelPosition(a.location.lat, a.location.lng, beginTile.x, beginTile.y);
+            airportMarker.x -= markerIcon.getWidth()/2f;
+            System.out.println("airportMarker " + airportMarker.x + " " + airportMarker.y);
+            if (temp.x >= airportMarker.x && temp.x <= airportMarker.x + markerIcon.getWidth()){
+                if (temp.y >= airportMarker.y && temp.y <= airportMarker.y + markerIcon.getHeight()){
+
+
+                    System.out.println("Clicked on " + a.address);
+                    game.setScreen(new GameScreen(game));
+                }
+            }
+
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean touchCancelled(int screenX, int screenY, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
+        return false;
+    }
+
+    @Override
+    public boolean mouseMoved(int screenX, int screenY) {
+        return false;
+    }
+
+    @Override
+    public boolean scrolled(float amountX, float amountY) {
+        return false;
+    }
+
 }
