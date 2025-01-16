@@ -167,6 +167,11 @@ public class MapScreen extends ScreenAdapter implements GestureDetector.GestureL
 
     }
 
+    @Override
+    public void dispose() {
+        stage.dispose();
+    }
+
     private void drawMarkers() {
         Vector2 marker = MapRasterTiles.getPixelPosition(MARKER_GEOLOCATION.lat, MARKER_GEOLOCATION.lng, beginTile.x, beginTile.y);
         //System.out.println("shape " + marker.x + " " + marker.y);
@@ -305,13 +310,13 @@ public class MapScreen extends ScreenAdapter implements GestureDetector.GestureL
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        System.out.println("Clicked on " + screenX + " " + screenY);
+        //System.out.println("Clicked on " + screenX + " " + screenY);
         Vector3 temp = new Vector3();
         temp.set(screenX,screenY,0);
         camera.unproject(temp);
         System.out.println("Clicked on unprojected " + temp.x + " " + temp.y);
         Vector2 clicked = MapRasterTiles.getPixelPosition(screenX, screenY, beginTile.x, beginTile.y);
-        System.out.println("Clicked on " + clicked.x + " " + clicked.y);
+        //System.out.println("Clicked on " + clicked.x + " " + clicked.y);
         for (Airport a : airports){
             Vector2 airportMarker = MapRasterTiles.getPixelPosition(a.location.lat, a.location.lng, beginTile.x, beginTile.y);
             airportMarker.x -= markerIcon.getWidth()/2f;

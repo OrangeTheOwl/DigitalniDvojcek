@@ -23,7 +23,7 @@ import io.github.some_example_name.config.GameConfig;
 
 public class IntroScreen  extends ScreenAdapter {
     private final Preferences prefs = Gdx.app.getPreferences("My Preferences");
-    public static final float INTRO_DURATION_IN_SEC = 4f;   // duration of the (intro) animation
+    public static final float INTRO_DURATION_IN_SEC = 0f;   // duration of the (intro) animation
     private final Main game;
     private final AssetManager assetManager;
     private Viewport viewport;
