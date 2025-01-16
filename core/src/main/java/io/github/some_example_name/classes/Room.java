@@ -25,7 +25,7 @@ public class Room extends BaseActor {
     public Room(float x, float y, Stage stage, int countY, int countX) {
         super(x, y, stage);
 
-        if (countX == 9 && countY == 9){
+        if (countX == 14 && countY == 9){
             loadTexture("assets/rawImages/redTile.jpg");
         }
         else {

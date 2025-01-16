@@ -99,7 +99,6 @@ public class MenuScreen extends ScreenAdapter {
 
         tablePlay.add(playButton);
 
-/*
         Table tableLeaderboard = new Table(skin);
         tableLeaderboard.setBackground("window-c");
         TextButton leaderboardButton = new TextButton("Leaderboard", skin);
@@ -109,7 +108,7 @@ public class MenuScreen extends ScreenAdapter {
                 game.setScreen(new LeaderboardScreen(game));
             }
         });
-        tableLeaderboard.add(leaderboardButton);*/
+        tableLeaderboard.add(leaderboardButton);
 
         /*TextButton settingsButton = new TextButton("Settings", skin);
         settingsButton.addListener(new ClickListener() {
@@ -153,8 +152,8 @@ public class MenuScreen extends ScreenAdapter {
 
         // buttonTable.add(introButton).padBottom(15).expandX().fillX().row();
         buttonTable.add(tablePlay).padBottom(15).expandX().fill().width(350).row();
-        /*buttonTable.add(tableLeaderboard).padBottom(15).fillX().row();
-        buttonTable.add(tableSettings).padBottom(15).fillX().row();
+        buttonTable.add(tableLeaderboard).padBottom(15).fillX().row();
+        /*buttonTable.add(tableSettings).padBottom(15).fillX().row();
         buttonTable.add(tableAddTemp).padBottom(15).fillX().row();*/
         buttonTable.add(tableQuit).fillX().width(350);
 

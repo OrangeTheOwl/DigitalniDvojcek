@@ -9,7 +9,7 @@ import io.github.some_example_name.BaseActor;
 public class Maze {
 
     // maze size constants
-    public final int roomCountX = 10;
+    public final int roomCountX = 15;
     public final int roomCountY = 10;
     private final int roomWidth = 64;
     private final int roomHeight = 64;

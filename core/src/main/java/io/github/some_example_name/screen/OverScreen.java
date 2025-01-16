@@ -5,9 +5,15 @@ import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -16,6 +22,8 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import io.github.some_example_name.Main;
 import io.github.some_example_name.assetUtil.AssetDescriptors;
 import io.github.some_example_name.assetUtil.RegionNames;
+import io.github.some_example_name.classes.PlayerScore;
+import io.github.some_example_name.common.GameManager;
 import io.github.some_example_name.config.GameConfig;
 
 public class OverScreen extends ScreenAdapter {
@@ -28,8 +36,11 @@ public class OverScreen extends ScreenAdapter {
 
     private TextureAtlas gameplayAtlas;
 
-    public OverScreen(Main game) {
+    Long elapsedTime;
+
+    public OverScreen(Main game, Long elapsedTime) {
         this.game = game;
+        this.elapsedTime = elapsedTime;
         assetManager = game.getAssetManager();
     }
 
@@ -43,7 +54,7 @@ public class OverScreen extends ScreenAdapter {
         gameplayAtlas = assetManager.get(AssetDescriptors.GAMEPLAY);
 
         stage.addActor(createBackround());
-        //stage.addActor(createUi());
+        stage.addActor(createUi());
         Gdx.input.setInputProcessor(stage);
 
     }
@@ -81,5 +92,122 @@ public class OverScreen extends ScreenAdapter {
 
         return root;
 
+    }
+
+    private Actor createUi() {
+        Table table = new Table(skin);
+        table.defaults().pad(20);
+        // TextButton introButton = new TextButton("Intro screen", skin);
+        // introButton.addListener(new ClickListener() {
+        //     @Override
+        //     public void clicked(InputEvent event, float x, float y) {
+        //         game.setScreen(new IntroScreen(game));
+        //     }
+        // });
+
+
+        Table tableInput = new Table(skin);
+        tableInput.setBackground("window-c");
+
+        Label labelScore = new Label("Your time: " + elapsedTime.toString(), skin);
+        tableInput.add(labelScore);
+        tableInput.row();
+
+        Label label = new Label("Enter name here:", skin);
+        tableInput.add(label);
+        tableInput.row();
+
+        TextField textField = new TextField("", skin);
+        tableInput.add(textField).right();
+        stage.setKeyboardFocus(textField);
+        textField.setCursorPosition(textField.getText().length());
+
+
+
+
+
+
+        Table tablePlay = new Table(skin);
+        tablePlay.setBackground("window-c");
+
+        TextButton playButton = new TextButton("Save and return to map", skin);
+        playButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                PlayerScore score = new PlayerScore(textField.getText(), elapsedTime.toString());
+                GameManager.INSTANCE.savePlayerScore(score);
+                game.setScreen(new MapScreen(game));
+            }
+        });
+
+        tablePlay.add(playButton);
+
+/*
+        Table tableLeaderboard = new Table(skin);
+        tableLeaderboard.setBackground("window-c");
+        TextButton leaderboardButton = new TextButton("Leaderboard", skin);
+        leaderboardButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                game.setScreen(new LeaderboardScreen(game));
+            }
+        });
+        tableLeaderboard.add(leaderboardButton);*/
+
+        /*TextButton settingsButton = new TextButton("Settings", skin);
+        settingsButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                game.setScreen(new SettingsScreen(game));
+            }
+        });*/
+
+        /*Table tableSettings = new Table(skin);
+        tableSettings.setBackground("window-c");
+        TextButton settingsButton = new TextButton("Settings", skin);
+        settingsButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                game.setScreen(new SettingsScreen(game));
+            }
+        });
+        tableSettings.add(settingsButton);*/
+
+
+
+        /*Table tableQuit = new Table(skin);
+        tableQuit.setBackground("window-c");
+        TextButton quitButton = new TextButton("Quit", skin);
+        quitButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Gdx.app.exit();
+            }
+        });
+        tableQuit.add(quitButton);*/
+
+
+
+
+
+
+        Table buttonTable = new Table();
+        buttonTable.defaults().padLeft(30).padRight(30);
+        buttonTable.add(tableInput).padBottom(15).expandX().fill().width(350).row();
+        // buttonTable.add(introButton).padBottom(15).expandX().fillX().row();
+        buttonTable.add(tablePlay).padBottom(15).expandX().fill().width(350).row();
+        /*buttonTable.add(tableLeaderboard).padBottom(15).fillX().row();
+        buttonTable.add(tableSettings).padBottom(15).fillX().row();
+        buttonTable.add(tableAddTemp).padBottom(15).fillX().row();*/
+        /*buttonTable.add(tableQuit).fillX().width(350);*/
+
+        buttonTable.center();
+
+        table.add(buttonTable);
+        table.center();
+        table.setFillParent(true);
+        table.pack();
+
+        return table;
     }
 }

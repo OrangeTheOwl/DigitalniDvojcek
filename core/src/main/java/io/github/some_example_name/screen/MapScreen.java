@@ -85,6 +85,7 @@ public class MapScreen extends ScreenAdapter implements GestureDetector.GestureL
 
     @Override
     public void show() {
+        viewport = new FitViewport(Constants.MAP_WIDTH, Constants.MAP_HEIGHT);
         airports = DatabaseUtil.getAirportLocations();
         System.out.println("Num of airports: " + airports.size());
         gameplayAtlas = assetManager.get(AssetDescriptors.GAMEPLAY);
@@ -130,6 +131,11 @@ public class MapScreen extends ScreenAdapter implements GestureDetector.GestureL
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
         Gdx.input.setInputProcessor(this);
 
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        viewport.update(width, height, true);
     }
 
     /*@Override
@@ -295,7 +301,11 @@ public class MapScreen extends ScreenAdapter implements GestureDetector.GestureL
 
     @Override
     public boolean keyDown(int keycode) {
-        return false;
+        if (keycode == Input.Keys.ESCAPE){
+            game.setScreen(new MenuScreen(game));
+        }
+
+        return true;
     }
 
     @Override

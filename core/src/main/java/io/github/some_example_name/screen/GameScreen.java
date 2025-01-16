@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -41,7 +42,7 @@ public class GameScreen extends ScreenAdapter {
 
     Player player;
 
-
+    Long startTime;
 
 
 
@@ -75,6 +76,7 @@ public class GameScreen extends ScreenAdapter {
 */
 
         Gdx.input.setInputProcessor(stage);
+        startTime = System.currentTimeMillis();
     }
 
     @Override
@@ -90,7 +92,8 @@ public class GameScreen extends ScreenAdapter {
         }
 
         if (player.getY() > 640-64 && player.getX() > 640-64){
-            game.setScreen(new OverScreen(game));
+            long elapsedTime = TimeUtils.timeSinceMillis(startTime);
+            game.setScreen(new OverScreen(game, elapsedTime));
             System.out.println("player " + player.getX() + " " + player.getY());
         }
 
