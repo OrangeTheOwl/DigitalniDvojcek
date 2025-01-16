@@ -39,6 +39,7 @@ import io.github.some_example_name.Main;
 import io.github.some_example_name.assetUtil.AssetDescriptors;
 import io.github.some_example_name.assetUtil.RegionNames;
 import io.github.some_example_name.classes.Airport;
+import io.github.some_example_name.classes.Traffic;
 import io.github.some_example_name.config.GameConfig;
 import io.github.some_example_name.databaseUtil.DatabaseUtil;
 import io.github.some_example_name.utils.Constants;
@@ -63,6 +64,7 @@ public class MapScreen extends ScreenAdapter implements GestureDetector.GestureL
     private Vector3 touchPosition;
 
     private Texture markerIcon = new Texture("assets/rawImages/marker.png");
+    private Texture markerTrafficIcon = new Texture("assets/rawImages/markerTraffic.png");
     private TiledMap tiledMap;
     private TiledMapRenderer tiledMapRenderer;
     private OrthographicCamera camera;
@@ -77,6 +79,7 @@ public class MapScreen extends ScreenAdapter implements GestureDetector.GestureL
     private final Geolocation MARKER_GEOLOCATION = new Geolocation(46.559070, 15.638100);
 
     private List<Airport> airports = new ArrayList<Airport>();
+    private List<Traffic> traffic = new ArrayList<Traffic>();
 
     public MapScreen(Main game) {
         this.game = game;
@@ -87,7 +90,9 @@ public class MapScreen extends ScreenAdapter implements GestureDetector.GestureL
     public void show() {
         viewport = new FitViewport(Constants.MAP_WIDTH, Constants.MAP_HEIGHT);
         airports = DatabaseUtil.getAirportLocations();
+        traffic = DatabaseUtil.getTrafficLocations();
         System.out.println("Num of airports: " + airports.size());
+        System.out.println("Num of traffic: " + traffic.size());
         gameplayAtlas = assetManager.get(AssetDescriptors.GAMEPLAY);
 
         shapeRenderer = new ShapeRenderer();
@@ -169,6 +174,7 @@ public class MapScreen extends ScreenAdapter implements GestureDetector.GestureL
         System.out.println("batch " + marker.x + " " + marker.y);*/
         game.getBatch().setProjectionMatrix(camera.combined);
         drawAirportMarkers();
+        drawTrafficMarkers();
         game.getBatch().end();
 
     }
@@ -207,6 +213,16 @@ public class MapScreen extends ScreenAdapter implements GestureDetector.GestureL
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
             shapeRenderer.circle(marker.x, marker.y, 10);
             shapeRenderer.end();*/
+        }
+
+    }
+    private void drawTrafficMarkers() {
+        for (Traffic t : traffic){
+
+            Vector2 marker = MapRasterTiles.getPixelPosition(t.location.lat, t.location.lng, beginTile.x, beginTile.y);
+
+            game.getBatch().draw(markerTrafficIcon,marker.x - markerTrafficIcon.getWidth()/2f ,marker.y);
+
         }
 
     }

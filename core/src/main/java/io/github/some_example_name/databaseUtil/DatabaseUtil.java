@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import io.github.some_example_name.classes.Airport;
+import io.github.some_example_name.classes.Traffic;
 import io.github.some_example_name.common.Secrets;
 import io.github.some_example_name.utils.Geocoding;
 
@@ -42,6 +43,38 @@ public class DatabaseUtil {
             }
 
             return allAirports;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+
+    }
+
+    public static List<Traffic> getTrafficLocations(){
+        try (MongoClient mongoClient = MongoClients.create(uri)) {
+            MongoDatabase database = mongoClient.getDatabase("website");
+            MongoCollection<Document> collection = database.getCollection("trafficinfos");
+            DistinctIterable<String> doc = collection.distinct("location", String.class);
+
+            int x = 0;
+            for (String document : doc) {
+                x++;
+                System.out.println(document);
+                if (x == 11) break;
+            }
+
+            List<Traffic> allTraffic = new ArrayList<Traffic>();
+            int y = 0;
+            for (String document : doc) {
+                y++;
+                Traffic test = Geocoding.getLongLatTraffic(document);
+                allTraffic.add(test);
+                if (y == 11) break;
+            }
+
+            return allTraffic;
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (InterruptedException e) {

@@ -16,6 +16,7 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 
 import io.github.some_example_name.classes.Airport;
+import io.github.some_example_name.classes.Traffic;
 
 public class Geocoding {
     static String mapServiceUrl = "https://maps.geoapify.com/v1/geocode/search?text=";
@@ -37,21 +38,47 @@ public class Geocoding {
         HttpResponse<String> response =
             client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        System.out.println(response.body());
+        //System.out.println(response.body());
         ObjectMapper mapper = new ObjectMapper();
         JsonNode jsonNode = mapper.readTree(response.body());
-        System.out.println("aaaaaaaaaaaaaaaaaaaaaa"+jsonNode.findValue("lat"));
+        //System.out.println("aaaaaaaaaaaaaaaaaaaaaa"+jsonNode.findValue("lat"));
         Double lat = jsonNode.findValue("lat").asDouble();
         Double lon = jsonNode.findValue("lon").asDouble();
         String country = jsonNode.findValue("country").asText();
+/*
 
 
         System.out.println(jsonNode.findValue("lon"));
         System.out.println(jsonNode.findValue("lat"));
         System.out.println(jsonNode.findValue("country"));
         System.out.println(jsonNode.findValue("address_line1"));
+*/
 
         return new Airport(lon, lat,country, address);
+    }
+
+    public static Traffic getLongLatTraffic(String address) throws IOException, InterruptedException {
+
+        address = encodeAddress(address);
+        String uri = mapServiceUrl + address + format + token;
+
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+            .uri(URI.create(uri))
+            .header("Content-Type", "application/json")
+            .build();
+
+        HttpResponse<String> response =
+            client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        //System.out.println(response.body());
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode jsonNode = mapper.readTree(response.body());
+        //System.out.println("aaaaaaaaaaaaaaaaaaaaaa"+jsonNode.findValue("lat"));
+        Double lat = jsonNode.findValue("lat").asDouble();
+        Double lon = jsonNode.findValue("lon").asDouble();
+
+        return new Traffic(lon, lat);
     }
 
     public static String encodeAddress(String addres) throws UnsupportedEncodingException {

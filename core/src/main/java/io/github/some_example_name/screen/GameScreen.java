@@ -91,7 +91,7 @@ public class GameScreen extends ScreenAdapter {
             player.preventOverlap(wall);
         }
 
-        if (player.getY() > 640-64 && player.getX() > 640-64){
+        if (player.getY() > GameConfig.HUD_HEIGHT-64 && player.getX() > GameConfig.HUD_WIDTH-64){
             long elapsedTime = TimeUtils.timeSinceMillis(startTime);
             game.setScreen(new OverScreen(game, elapsedTime));
             System.out.println("player " + player.getX() + " " + player.getY());
