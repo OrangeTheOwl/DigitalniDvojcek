@@ -39,5 +39,14 @@ class MainActivity : AppCompatActivity() {
                 )
             )
         }
+
+        binding.buttonGoToMap.setOnClickListener(){
+            startActivity(
+                Intent(
+                    this@MainActivity,
+                    MapsActivity::class.java
+                )
+            )
+        }
     }
 }

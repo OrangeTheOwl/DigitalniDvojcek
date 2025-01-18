@@ -217,6 +217,8 @@ class AddPhotoActivity : AppCompatActivity() {
 
     private fun postImage(path: String, myLocation: String) {
 
+
+
        /* var distance = haversine_distance(app.currentLocation, myLocation)
 
         var score = (10000 / distance * 10).toInt()
