@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "190107190446",
+    "project_id": "airportmobile-161fa",
+    "storage_bucket": "airportmobile-161fa.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:190107190446:android:15290177904f33160dd93f",
+        "android_client_info": {
+          "package_name": "com.example.airportmobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCQu48Ep0Y6onYJM_8kDw_Rmyw92X6lJYc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

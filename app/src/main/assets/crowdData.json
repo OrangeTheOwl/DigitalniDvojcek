@@ -1,0 +1,98 @@
+[
+  {
+    "locationId": "6656ef9d83f28aa76711bac3",
+    "locationName": "Ljubljana",
+    "crowdNumber": 990,
+    "timestamp": "2025-01-19T12:00:00Z"
+  },
+  {
+    "locationId": "6666380c3d42466311c12b38",
+    "locationName": "Zagreb",
+    "crowdNumber": 80,
+    "timestamp": "2025-01-19T12:00:00Z"
+  },
+  {
+    "locationId": "3e98a06d5b712c31e089d703",
+    "locationName": "Bratislava",
+    "crowdNumber": 50,
+    "timestamp": "2025-01-19T12:00:00Z"
+  },
+  {
+    "locationId": "57503365c6efe496958d246d",
+    "locationName": "Dunaj",
+    "crowdNumber": 200,
+    "timestamp": "2025-01-19T12:00:00Z"
+  },
+  {
+    "locationId": "6656ef9d83f28aa76711bac3",
+    "locationName": "Ljubljana",
+    "crowdNumber": 50,
+    "timestamp": "2025-01-19T11:30:00Z"
+  },
+  {
+    "locationId": "6656ef9d83f28aa76711bac3",
+    "locationName": "Ljubljana",
+    "crowdNumber": 45,
+    "timestamp": "2025-01-19T11:00:00Z"
+  },
+  {
+    "locationId": "6656ef9d83f28aa76711bac3",
+    "locationName": "Ljubljana",
+    "crowdNumber": 60,
+    "timestamp": "2025-01-19T10:30:00Z"
+  },
+  {
+    "locationId": "6666380c3d42466311c12b38",
+    "locationName": "Zagreb",
+    "crowdNumber": 70,
+    "timestamp": "2025-01-19T11:30:00Z"
+  },
+  {
+    "locationId": "6666380c3d42466311c12b38",
+    "locationName": "Zagreb",
+    "crowdNumber": 75,
+    "timestamp": "2025-01-19T11:00:00Z"
+  },
+  {
+    "locationId": "6666380c3d42466311c12b38",
+    "locationName": "Zagreb",
+    "crowdNumber": 80,
+    "timestamp": "2025-01-19T10:30:00Z"
+  },
+  {
+    "locationId": "3e98a06d5b712c31e089d703",
+    "locationName": "Bratislava",
+    "crowdNumber": 40,
+    "timestamp": "2025-01-19T11:30:00Z"
+  },
+  {
+    "locationId": "3e98a06d5b712c31e089d703",
+    "locationName": "Bratislava",
+    "crowdNumber": 600,
+    "timestamp": "2025-01-19T11:00:00Z"
+  },
+  {
+    "locationId": "3e98a06d5b712c31e089d703",
+    "locationName": "Bratislava",
+    "crowdNumber": 0,
+    "timestamp": "2025-01-19T10:30:00Z"
+  },
+  {
+    "locationId": "57503365c6efe496958d246d",
+    "locationName": "Dunaj",
+    "crowdNumber": 90,
+    "timestamp": "2025-01-19T11:30:00Z"
+  },
+  {
+    "locationId": "57503365c6efe496958d246d",
+    "locationName": "Dunaj",
+    "crowdNumber": 85,
+    "timestamp": "2025-01-19T11:00:00Z"
+  },
+  {
+    "locationId": "57503365c6efe496958d246d",
+    "locationName": "Dunaj",
+    "crowdNumber": 95,
+    "timestamp": "2025-01-19T10:30:00Z"
+  }
+]

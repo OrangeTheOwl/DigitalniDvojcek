@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    tools:context=".SensorsActivity">
+
+    <!-- Light Sensor Information -->
+    <TextView
+        android:id="@+id/textViewLightLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Light Sensor:"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:paddingBottom="4dp" />
+
+    <TextView
+        android:id="@+id/textViewLight"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Light Level: 0 lx"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textViewLightLabel"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:paddingBottom="16dp" />
+
+    <!-- Accelerometer Information -->
+    <TextView
+        android:id="@+id/textViewAccelerometerLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Accelerometer:"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textViewLight"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:paddingBottom="4dp" />
+
+    <TextView
+        android:id="@+id/textViewAccelerometer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Accelerometer: x=0, y=0, z=0"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textViewAccelerometerLabel"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:paddingBottom="16dp" />
+
+    <!-- Microphone Information -->
+    <TextView
+        android:id="@+id/textViewMicrophoneLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Microphone:"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textViewAccelerometer"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:paddingBottom="4dp" />
+
+    <TextView
+        android:id="@+id/textViewMicrophone"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Microphone Level: 0 dB"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textViewMicrophoneLabel"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:paddingBottom="16dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

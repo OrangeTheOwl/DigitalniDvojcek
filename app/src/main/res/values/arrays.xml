@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Locations for the spinner -->
+    <string-array name="locations">
+        <item>Ljubljana</item>
+        <item>Zagreb</item>
+        <item>Bratislava</item>
+        <item>Dunaj</item>
+    </string-array>
+
+    <!-- Frequencies for the spinner -->
+    <string-array name="frequencies">
+        <item>No Frequency</item>
+        <item>10 Seconds</item>
+        <item>2 Minutes</item>
+    </string-array>
+</resources>

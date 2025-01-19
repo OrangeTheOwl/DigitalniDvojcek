@@ -1,14 +1,19 @@
 package com.example.airportmobile
 
-import android.R
-import android.annotation.SuppressLint
+import android.Manifest
 import android.content.pm.PackageManager
+import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
+import android.view.View
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.camera.core.AspectRatio
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
@@ -19,13 +24,23 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import com.example.airportmobile.databinding.ActivityAddphotoBinding
+import org.json.JSONArray
+import org.json.JSONObject
 import java.io.File
-
+import java.io.FileOutputStream
+import java.io.OutputStreamWriter
+import java.util.*
 
 class AddPhotoActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAddphotoBinding
     private lateinit var previewView: PreviewView
-    private var imagePath : String? = null;
+    private var imageCapture: ImageCapture? = null
+    private var imagePath: String? = null
+    private var selectedLocation: String? = null
+    private var selectedFrequency: String? = null
+    private val handler = Handler(Looper.getMainLooper())
+    private var isPostingContinuously = false
+    private var isBackCamera = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,23 +49,56 @@ class AddPhotoActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
-        previewView  = binding.previewView
+        previewView = binding.previewView
         binding.buttonOpenCamera.isEnabled = true
         binding.buttonOpenCamera.isVisible = true
         binding.buttonTakePhoto.isEnabled = false
         binding.buttonTakePhoto.isVisible = false
         binding.buttonPost.isEnabled = false
         binding.buttonPost.isVisible = false
+        binding.buttonReset.isEnabled = false
+        binding.buttonReset.isVisible = false
 
-        val items = arrayOf("Ljubljana", "Bratislava", "Dunaj", "Zagreb")
-        val adapter: ArrayAdapter<String?> = ArrayAdapter(this, R.layout.simple_spinner_dropdown_item, items)
-        binding.spinner.adapter = adapter
+        // Location spinner setup
+        val locations = arrayOf("Ljubljana", "Bratislava", "Dunaj", "Zagreb")
+        val locationAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, locations)
+        binding.spinner.adapter = locationAdapter
 
-        binding.buttonOpenCamera.setOnClickListener(){
-            //setupLocation()
-            //getLocation()
+        binding.spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                selectedLocation = locations[position]
+                Log.d("SelectedLocation", "Selected: $selectedLocation")
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                selectedLocation = null
+                Log.d("SelectedLocation", "Nothing selected")
+            }
+        }
+
+        // Frequency spinner setup
+        val frequencies = arrayOf("No Frequency", "10 Seconds", "2 Minutes")
+        val frequencyAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, frequencies)
+        binding.spinnerFrequency.adapter = frequencyAdapter
+
+        binding.spinnerFrequency.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                selectedFrequency = frequencies[position]
+                if (selectedFrequency == "No Frequency") {
+                    stopContinuousPosting()
+                }
+                Log.d("SelectedFrequency", "Selected: $selectedFrequency")
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                selectedFrequency = "No Frequency"
+                stopContinuousPosting()
+                Log.d("SelectedFrequency", "No frequency selected")
+            }
+        }
+
+        binding.buttonOpenCamera.setOnClickListener {
             requestCameraPermission()
-
             binding.buttonOpenCamera.isEnabled = false
             binding.buttonOpenCamera.isVisible = false
             binding.buttonTakePhoto.isEnabled = true
@@ -59,179 +107,178 @@ class AddPhotoActivity : AppCompatActivity() {
             binding.buttonPost.isVisible = false
         }
 
-        binding.buttonTakePhoto.setOnClickListener(){
-            binding.buttonOpenCamera.isEnabled = false
-            binding.buttonOpenCamera.isVisible = false
-            binding.buttonTakePhoto.isEnabled = false
-            binding.buttonTakePhoto.isVisible = false
-            binding.buttonPost.isEnabled = true
-            binding.buttonPost.isVisible = true
+        binding.buttonTakePhoto.setOnClickListener {
             captureImage()
         }
 
-        /*binding.buttonPost.setOnClickListener(){
-            if (imagePath != null && myLocation != null){
-                postImage(imagePath!!, myLocation!!)
-                var toast= Toast.makeText(this@AddPostActivity, "Number: " + app.data.size.toString(), Toast.LENGTH_SHORT) // in Activity
-                toast.show()
-            }
-            else{
-                var toast= Toast.makeText(this@AddPostActivity, "errorWithPost", Toast.LENGTH_SHORT) // in Activity
-                toast.show()
-            }
-
-            val intent = Intent(
-                this@AddPostActivity,
-                MapsActivity::class.java
-            )
-            // FLAG_UPDATE_CURRENT specifies that if a previous
-            // PendingIntent already exists, then the current one
-            // will update it with the latest intent
-            // 0 is the request code, using it later with the
-            // same method again will get back the same pending
-            // intent for future reference
-            // intent passed here is to our afterNotification class
-            val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_MUTABLE)
-
-
-            // checking if android version is greater than oreo(API 26) or not
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                notificationChannel = NotificationChannel(channelId, description, NotificationManager.IMPORTANCE_HIGH)
-                notificationChannel.enableLights(true)
-                notificationChannel.lightColor = Color.GREEN
-                notificationChannel.enableVibration(false)
-                notificationManager.createNotificationChannel(notificationChannel)
-
-                builder = Notification.Builder(this, channelId)
-                    .setSmallIcon(R.drawable.ic_notification_overlay)
-                    .setLargeIcon(BitmapFactory.decodeResource(this.resources, R.drawable.ic_notification_overlay))
-                    .setContentText("New location is here!!!!")
-                    .setContentIntent(pendingIntent)
+        binding.buttonPost.setOnClickListener {
+            if (selectedLocation != null) {
+                if (selectedFrequency == "No Frequency") {
+                    addNewEntryToJson(selectedLocation!!)
+                    Toast.makeText(this, "New entry added to JSON file", Toast.LENGTH_SHORT).show()
+                } else {
+                    startContinuousPosting()
+                }
             } else {
-
-                builder = Notification.Builder(this)
-                    .setSmallIcon(R.drawable.ic_notification_overlay)
-                    .setLargeIcon(BitmapFactory.decodeResource(this.resources, R.drawable.ic_notification_overlay))
-                    .setContentText("New location is here!!!!")
-                    .setContentIntent(pendingIntent)
+                Toast.makeText(this, "Please select a location", Toast.LENGTH_SHORT).show()
             }
-            notificationManager.notify(1234, builder.build())
-            finish()
-        }*/
+        }
 
-    }
-    private val cameraPermissionRequestCode = 100
-    private fun requestCameraPermission() {
-        if (ContextCompat.checkSelfPermission(
-                this,
-                android.Manifest.permission.CAMERA
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(android.Manifest.permission.CAMERA),
-                cameraPermissionRequestCode
-            )
-        } else {
-            // Permission already granted
+        binding.buttonReset.setOnClickListener {
+            binding.imageViewCapturedPhoto.isVisible = false
+            binding.previewView.isVisible = true
+            binding.buttonTakePhoto.isVisible = true
+            binding.buttonTakePhoto.isEnabled = true
+            binding.buttonPost.isEnabled = false
+            binding.buttonPost.isVisible = false
+            binding.buttonReset.isEnabled = false
+            binding.buttonReset.isVisible = false
+        }
+
+        binding.buttonSwitchCamera.setOnClickListener {
+            isBackCamera = !isBackCamera
             openCamera()
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        stopContinuousPosting() // Ensure posting stops when activity is destroyed
+    }
+
+    override fun onBackPressed() {
+        stopContinuousPosting() // Ensure posting stops when user navigates back
+        super.onBackPressed()
+    }
+
+    private fun startContinuousPosting() {
+        isPostingContinuously = true
+        val interval = when (selectedFrequency) {
+            "10 Seconds" -> 10_000L
+            "2 Minutes" -> 120_000L
+            else -> 0L
+        }
+
+        handler.post(object : Runnable {
+            override fun run() {
+                if (isPostingContinuously && selectedLocation != null) {
+                    addNewEntryToJson(selectedLocation!!)
+                    Toast.makeText(this@AddPhotoActivity, "New entry added to JSON file", Toast.LENGTH_SHORT).show()
+                    handler.postDelayed(this, interval)
+                }
+            }
+        })
+    }
+
+    private fun stopContinuousPosting() {
+        isPostingContinuously = false
+        handler.removeCallbacksAndMessages(null)
+        Log.d("ContinuousPosting", "Stopped continuous posting")
+    }
+
+    private val cameraPermissionRequestCode = 100
+    private fun requestCameraPermission() {
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.CAMERA
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.CAMERA),
+                cameraPermissionRequestCode
+            )
+        } else {
+            openCamera()
+        }
+    }
 
     private fun openCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
         cameraProviderFuture.addListener({
             val cameraProvider = cameraProviderFuture.get()
-            val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
-            val preview = Preview.Builder().build()
-            val imageCapture = ImageCapture.Builder().build()
-
-            try {
-                cameraProvider.unbindAll()
-                val camera = cameraProvider.bindToLifecycle(
-                    this,
-                    cameraSelector,
-                    preview,
-                    imageCapture
-                )
-                preview.setSurfaceProvider(previewView.surfaceProvider)
-            } catch (exception: Exception) {
-                // Handle camera setup errors
+            val cameraSelector = if (isBackCamera) {
+                CameraSelector.DEFAULT_BACK_CAMERA
+            } else {
+                CameraSelector.DEFAULT_FRONT_CAMERA
             }
-        }, ContextCompat.getMainExecutor(this))
-    }
-
-    private fun captureImage() {
-
-        val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
-        cameraProviderFuture.addListener({
-            val cameraProvider = cameraProviderFuture.get()
-            val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
-            val preview = Preview.Builder().build()
-            val imageCapture = ImageCapture.Builder()
-                .setTargetRotation(previewView.display.rotation)
+            val preview = Preview.Builder()
+                .setTargetAspectRatio(AspectRatio.RATIO_16_9) // Adjust aspect ratio as needed
+                .build()
+            val imageCaptureInstance = ImageCapture.Builder()
+                .setTargetAspectRatio(AspectRatio.RATIO_16_9) // Ensure consistency
                 .build()
 
             try {
                 cameraProvider.unbindAll()
-                val camera = cameraProvider.bindToLifecycle(
+                cameraProvider.bindToLifecycle(
                     this,
                     cameraSelector,
                     preview,
-                    imageCapture
+                    imageCaptureInstance
                 )
-                val file = File(externalMediaDirs.first(), System.currentTimeMillis().toString() + ".jpg")
-                val outputOptions = ImageCapture.OutputFileOptions.Builder(file).build()
-                imageCapture.takePicture(outputOptions, ContextCompat.getMainExecutor(this),
-                    object : ImageCapture.OnImageSavedCallback {
-
-                        @SuppressLint("RestrictedApi")
-                        override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                            // Image saved successfully
-                            val toast = Toast.makeText(this@AddPhotoActivity, "saved", Toast.LENGTH_SHORT) // in Activity
-                            //val toastLocation = Toast.makeText(this@AddPhotoActivity, "myLocation: "+myLocation.toString(), Toast.LENGTH_SHORT) // in Activity
-                            Log.w("0", outputOptions.file.toString());
-                            toast.show()
-                            //toastLocation.show()
-                            imagePath = outputOptions.file.toString()
-                        }
-
-                        override fun onError(exception: ImageCaptureException) {
-
-                            // Handle image capture errors
-                            val toast = Toast.makeText(this@AddPhotoActivity, exception.message, Toast.LENGTH_SHORT) // in Activity
-
-                            Log.w("myApp", exception.message.toString());
-                            toast.show()
-                        }
-                    })
+                preview.setSurfaceProvider(previewView.surfaceProvider)
+                imageCapture = imageCaptureInstance
             } catch (exception: Exception) {
-                // Handle camera setup errors
+                Log.e("CameraError", "Error binding camera lifecycle", exception)
             }
         }, ContextCompat.getMainExecutor(this))
-
-
-
     }
 
-    private fun postImage(path: String, myLocation: String) {
 
+    private fun captureImage() {
+        val file = File(externalMediaDirs.first(), "${System.currentTimeMillis()}.jpg")
+        val outputOptions = ImageCapture.OutputFileOptions.Builder(file).build()
 
+        imageCapture?.takePicture(outputOptions, ContextCompat.getMainExecutor(this),
+            object : ImageCapture.OnImageSavedCallback {
+                override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
+                    imagePath = file.absolutePath
+                    binding.imageViewCapturedPhoto.setImageBitmap(BitmapFactory.decodeFile(file.absolutePath))
+                    binding.imageViewCapturedPhoto.isVisible = true
+                    binding.previewView.isVisible = false
+                    binding.buttonTakePhoto.isVisible = false
+                    binding.buttonPost.isEnabled = true
+                    binding.buttonPost.isVisible = true
+                    binding.buttonReset.isEnabled = true
+                    binding.buttonReset.isVisible = true
+                    Toast.makeText(this@AddPhotoActivity, "Image saved: $imagePath", Toast.LENGTH_SHORT).show()
+                }
 
-       /* var distance = haversine_distance(app.currentLocation, myLocation)
+                override fun onError(exception: ImageCaptureException) {
+                    Log.e("ImageCapture", "Error capturing image", exception)
+                    Toast.makeText(this@AddPhotoActivity, "Error capturing image", Toast.LENGTH_SHORT).show()
+                }
+            }) ?: run {
+            Toast.makeText(this, "Camera not initialized", Toast.LENGTH_SHORT).show()
+        }
+    }
 
-        var score = (10000 / distance * 10).toInt()
-        if (score < 1) score = 1
+    private fun addNewEntryToJson(location: String) {
+        try {
+            val assetManager = assets
+            val jsonString = assetManager.open("crowdData.json").bufferedReader().use { it.readText() }
+            val jsonArray = JSONArray(jsonString)
 
-        var imageToAdd = PostedImage(path, app.currentLocation, myLocation, distance, score)
+            // Create a new entry
+            val newEntry = JSONObject()
+            newEntry.put("locationName", location)
+            newEntry.put("crowdNumber", (0..1000).random())
+            newEntry.put("timestamp", System.currentTimeMillis())
 
-        app.data.add(imageToAdd)
-        app.saveToFile()
-        app.saveScoreAndNumOfPosts(score)
-        var lat = Random.nextDouble(-64.0, 64.0);
-        var lon = Random.nextDouble(-64.0, 64.0);
-        app.updateLocation(lat,lon)*/
+            jsonArray.put(newEntry)
 
+            // Write back to the file
+            val file = File(filesDir, "crowdData.json")
+            val fos = FileOutputStream(file)
+            val writer = OutputStreamWriter(fos)
+            writer.write(jsonArray.toString())
+            writer.close()
+            fos.close()
+
+            Log.d("JSONUpdate", "New entry added: $newEntry to $filesDir")
+        } catch (e: Exception) {
+            Log.e("JSONError", "Error updating JSON file", e)
+        }
     }
 }

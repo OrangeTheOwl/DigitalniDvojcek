@@ -5,52 +5,109 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".MainActivity">
 
+    <!-- Logotip -->
+    <ImageView
+        android:id="@+id/logoImage"
+        android:layout_width="215dp"
+        android:layout_height="214dp"
+        android:layout_marginTop="16dp"
+        android:contentDescription="App Logo"
+        android:src="@drawable/logo2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Glavni naslov aplikacije -->
     <TextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="8dp"
+        android:text="Airport Mobile"
+        android:textColor="@color/black"
+        android:textSize="24sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/logoImage" />
 
+    <!-- Gumb za fotografiranje -->
     <Button
         android:id="@+id/buttonGoToPhoto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="154dp"
-        android:layout_marginTop="226dp"
-        android:layout_marginEnd="167dp"
-        android:text="ButtonTakePhoto"
+        android:layout_marginTop="128dp"
+        android:text="Take Photo"
+        android:textColor="@color/white"
+        android:padding="10dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+        app:layout_constraintTop_toBottomOf="@id/textView2" />
 
+    <!-- Gumb za pregled podatkov -->
     <Button
         android:id="@+id/buttonGoToAllData"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="146dp"
-        android:layout_marginTop="118dp"
-        android:layout_marginEnd="175dp"
-        android:text="ButtonSeeData"
+        android:layout_marginTop="32dp"
+        android:text="View Data"
+        android:textColor="@color/white"
+        android:padding="10dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+        app:layout_constraintTop_toBottomOf="@id/buttonGoToPhoto" />
 
+    <!-- Gumb za zemljevid -->
     <Button
         android:id="@+id/buttonGoToMap"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="192dp"
-        android:layout_marginTop="153dp"
-        android:layout_marginEnd="101dp"
-        android:text="ButtonMap"
+        android:layout_marginTop="32dp"
+        android:text="Open Map"
+        android:textColor="@color/white"
+        android:padding="10dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/buttonGoToAllData" />
+
+    <!-- Gumb za testne podatke -->
+    <Button
+        android:id="@+id/buttonGoToTestData"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="Test Data"
+        android:textColor="@color/white"
+        android:padding="10dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/buttonGoToMap" />
+
+    <Button
+        android:id="@+id/buttonGoToSensors"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="Sensors"
+        android:textColor="@color/white"
+        android:padding="10dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonGoToTestData" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

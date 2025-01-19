@@ -48,5 +48,15 @@ class MainActivity : AppCompatActivity() {
                 )
             )
         }
+
+        binding.buttonGoToTestData.setOnClickListener {
+            val intent = Intent(this, TestDataActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.buttonGoToSensors.setOnClickListener {
+            startActivity(Intent(this, SensorsActivity::class.java))
+        }
+
     }
 }

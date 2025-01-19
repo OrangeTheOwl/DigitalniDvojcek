@@ -11,6 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="Zadnje znano število ljudi:"
+        android:textSize="16sp"
         app:layout_constraintStart_toStartOf="@+id/guideline4"
         app:layout_constraintTop_toBottomOf="@+id/progressBarDunaj" />
 
@@ -20,6 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="0"
+        android:textSize="16sp"
         app:layout_constraintEnd_toStartOf="@+id/guideline5"
         app:layout_constraintStart_toEndOf="@+id/textView9"
         app:layout_constraintTop_toBottomOf="@+id/progressBarDunaj" />
@@ -30,6 +32,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="Zadnje znano število ljudi:"
+        android:textSize="16sp"
         app:layout_constraintStart_toStartOf="@+id/guideline4"
         app:layout_constraintTop_toBottomOf="@+id/progressBarLjubljana" />
 
@@ -39,6 +42,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="0"
+        android:textSize="16sp"
         app:layout_constraintEnd_toStartOf="@+id/guideline5"
         app:layout_constraintStart_toEndOf="@+id/textView13"
         app:layout_constraintTop_toBottomOf="@+id/progressBarLjubljana" />
@@ -49,6 +53,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="Zadnje znano število ljudi:"
+        android:textSize="16sp"
         app:layout_constraintStart_toStartOf="@+id/guideline4"
         app:layout_constraintTop_toBottomOf="@+id/progressBarZagreb" />
 
@@ -58,6 +63,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="0"
+        android:textSize="16sp"
         app:layout_constraintEnd_toStartOf="@+id/guideline5"
         app:layout_constraintStart_toEndOf="@+id/textView11"
         app:layout_constraintTop_toBottomOf="@+id/progressBarZagreb" />
@@ -68,7 +74,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="80dp"
         android:text="Letališče Ljubljana"
-        android:textSize="16sp"
+        android:textSize="20sp"
         app:layout_constraintEnd_toStartOf="@+id/guideline5"
         app:layout_constraintStart_toStartOf="@+id/guideline4"
         app:layout_constraintTop_toBottomOf="@+id/textView4" />
@@ -94,7 +100,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="48dp"
         android:text="Letališče Dunaj"
-        android:textSize="16sp"
+        android:textSize="20sp"
         app:layout_constraintEnd_toStartOf="@+id/guideline5"
         app:layout_constraintStart_toStartOf="@+id/guideline4"
         app:layout_constraintTop_toBottomOf="@+id/progressBarBratislava" />
@@ -120,7 +126,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="48dp"
         android:text="Letališče Bratislava"
-        android:textSize="16sp"
+        android:textSize="20sp"
         app:layout_constraintEnd_toStartOf="@+id/guideline5"
         app:layout_constraintStart_toStartOf="@+id/guideline4"
         app:layout_constraintTop_toBottomOf="@+id/progressBarZagreb" />
@@ -175,7 +181,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="48dp"
         android:text="Letališče Zagreb"
-        android:textSize="16sp"
+        android:textSize="20sp"
         app:layout_constraintEnd_toStartOf="@+id/guideline5"
         app:layout_constraintStart_toStartOf="@+id/guideline4"
         app:layout_constraintTop_toBottomOf="@+id/progressBarLjubljana" />
@@ -205,6 +211,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="Max. vrednost: 1000 ljudi"
+        android:textSize="16sp"
         app:layout_constraintEnd_toStartOf="@+id/guideline5"
         app:layout_constraintStart_toStartOf="@+id/guideline4"
         app:layout_constraintTop_toBottomOf="@+id/textView4" />
@@ -215,6 +222,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="Zadnje znano število ljudi:"
+        android:textSize="16sp"
         app:layout_constraintStart_toStartOf="@+id/guideline4"
         app:layout_constraintTop_toBottomOf="@+id/progressBarBratislava" />
 
@@ -224,6 +232,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="0"
+        android:textSize="16sp"
         app:layout_constraintEnd_toStartOf="@+id/guideline5"
         app:layout_constraintStart_toEndOf="@+id/textView9"
         app:layout_constraintTop_toBottomOf="@+id/progressBarBratislava" />
