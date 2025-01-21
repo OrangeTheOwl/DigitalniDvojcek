@@ -151,7 +151,9 @@ public class OverScreen extends ScreenAdapter {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 PlayerScore score = new PlayerScore(textField.getText(), elapsedTime.toString());
-                GameManager.INSTANCE.savePlayerScore(score);
+                if (elapsedTime < 24999){
+                    GameManager.INSTANCE.savePlayerScore(score);
+                }
                 game.setScreen(new MapScreen(game));
             }
         });
