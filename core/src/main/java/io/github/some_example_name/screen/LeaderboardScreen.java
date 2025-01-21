@@ -20,6 +20,8 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import io.github.some_example_name.assetUtil.AssetDescriptors;
@@ -98,6 +100,10 @@ public class LeaderboardScreen extends ScreenAdapter {
         tableScores.setBounds(0, 0, 300f, 300f);
 
         List<PlayerScore> allScores  = GameManager.INSTANCE.getPlayerScore();
+
+        Collections.sort(allScores);
+
+
         if (allScores != null){
             for (int i = 0; i < allScores.size(); i++){
                 Label labelName = new Label(allScores.get(i).name, skin);

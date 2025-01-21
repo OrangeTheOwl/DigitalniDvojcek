@@ -105,6 +105,22 @@ public class OverScreen extends ScreenAdapter {
         //     }
         // });
 
+        Table tableTitle = new Table(skin);
+        tableTitle.setBackground("window-c");
+        Label labelTitle = new Label("Game over", skin);
+        tableTitle.add(labelTitle);
+        tableTitle.row();
+
+        if (elapsedTime > 24999){
+            Label gameState = new Label("You missed your flight", skin);
+            tableTitle.add(gameState);
+        }
+        else{
+            Label gameState = new Label("You made your flight", skin);
+            tableTitle.add(gameState);
+        }
+
+
 
         Table tableInput = new Table(skin);
         tableInput.setBackground("window-c");
@@ -193,9 +209,12 @@ public class OverScreen extends ScreenAdapter {
 
         Table buttonTable = new Table();
         buttonTable.defaults().padLeft(30).padRight(30);
+        buttonTable.add(tableTitle).padBottom(15).expandX().fill().width(350).row();
         buttonTable.add(tableInput).padBottom(15).expandX().fill().width(350).row();
         // buttonTable.add(introButton).padBottom(15).expandX().fillX().row();
         buttonTable.add(tablePlay).padBottom(15).expandX().fill().width(350).row();
+
+
         /*buttonTable.add(tableLeaderboard).padBottom(15).fillX().row();
         buttonTable.add(tableSettings).padBottom(15).fillX().row();
         buttonTable.add(tableAddTemp).padBottom(15).fillX().row();*/

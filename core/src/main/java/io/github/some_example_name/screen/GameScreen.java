@@ -97,6 +97,10 @@ public class GameScreen extends ScreenAdapter {
             System.out.println("player " + player.getX() + " " + player.getY());
         }
 
+       /* if (TimeUtils.timeSinceMillis(startTime) > 24999){
+            game.setScreen(new OverScreen(game, TimeUtils.timeSinceMillis(startTime)));
+        }*/
+
 
 
         stage.act(delta);

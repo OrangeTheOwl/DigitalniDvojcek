@@ -8,6 +8,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -23,7 +24,10 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -78,6 +82,7 @@ public class MapScreen extends ScreenAdapter implements GestureDetector.GestureL
     // test marker
     private final Geolocation MARKER_GEOLOCATION = new Geolocation(46.559070, 15.638100);
 
+    private BitmapFont font;
     private List<Airport> airports = new ArrayList<Airport>();
     private List<Traffic> traffic = new ArrayList<Traffic>();
 
@@ -89,11 +94,18 @@ public class MapScreen extends ScreenAdapter implements GestureDetector.GestureL
     @Override
     public void show() {
         viewport = new FitViewport(Constants.MAP_WIDTH, Constants.MAP_HEIGHT);
+        stage = new Stage(viewport, game.getBatch());
+        skin = assetManager.get(AssetDescriptors.UI_SKIN);
         airports = DatabaseUtil.getAirportLocations();
         traffic = DatabaseUtil.getTrafficLocations();
         System.out.println("Num of airports: " + airports.size());
         System.out.println("Num of traffic: " + traffic.size());
         gameplayAtlas = assetManager.get(AssetDescriptors.GAMEPLAY);
+
+
+        font = new BitmapFont();
+        font.setColor(Color.BLUE);
+
 
         shapeRenderer = new ShapeRenderer();
 
@@ -176,7 +188,8 @@ public class MapScreen extends ScreenAdapter implements GestureDetector.GestureL
         drawAirportMarkers();
         drawTrafficMarkers();
         game.getBatch().end();
-
+        stage.act(delta);
+        stage.draw();
     }
 
     @Override
@@ -349,9 +362,22 @@ public class MapScreen extends ScreenAdapter implements GestureDetector.GestureL
             System.out.println("airportMarker " + airportMarker.x + " " + airportMarker.y);
             if (temp.x >= airportMarker.x && temp.x <= airportMarker.x + markerIcon.getWidth()){
                 if (temp.y >= airportMarker.y && temp.y <= airportMarker.y + markerIcon.getHeight()){
-
-
                     System.out.println("Clicked on " + a.address);
+
+                    /*Drawable tt = skin.newDrawable("window-c");
+                    Window.WindowStyle test = new Window.WindowStyle(font, Color.BLACK, tt);
+                    Dialog dialog = new Dialog("", skin) {
+                        public void result(Object obj) {
+                            System.out.println("result "+obj);
+                        }
+                    };
+
+                    dialog.text("Are you sure you want to quit?");
+                    dialog.button("Yes", true); //sends "true" as the result
+                    dialog.button("No", false);  //sends "false" as the result
+                    //dialog.key(Keys.Enter, true); //sends "true" when the ENTER key is pressed
+                    dialog.scaleBy(5f);
+                    dialog.show(stage);*/
                     game.setScreen(new GameScreen(game));
                 }
             }
