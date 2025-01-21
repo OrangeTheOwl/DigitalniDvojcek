@@ -7,6 +7,8 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import android.location.Geocoder
+import android.location.Location
 import android.media.MediaRecorder
 import android.os.Bundle
 import android.util.Log
@@ -15,6 +17,10 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.example.airportmobile.database.AppDatabase
+import com.example.airportmobile.database.ExtremeEventEntity
+import com.google.android.gms.location.LocationServices
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlin.math.log10
 
 class SensorsActivity : AppCompatActivity(), SensorEventListener {
@@ -101,9 +107,10 @@ class SensorsActivity : AppCompatActivity(), SensorEventListener {
                         turbulenceStartTime = System.currentTimeMillis()
                     } else {
                         val currentTime = System.currentTimeMillis()
-                        if (currentTime - turbulenceStartTime >= 3000) { // Če traja več kot 3 sekunde
+                        if (currentTime - turbulenceStartTime >= 3000) {
                             Toast.makeText(this, "Zaznana turbulenca! Prosim, ostanite varni.", Toast.LENGTH_LONG).show()
-                            turbulenceStartTime = currentTime // Ponastavitev za ponovno preverjanje
+                            turbulenceStartTime = currentTime
+                            saveExtremeEvent("Turbolenca")
                         }
                     }
                 } else {
@@ -114,11 +121,71 @@ class SensorsActivity : AppCompatActivity(), SensorEventListener {
         }
     }
 
-
-
-    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
-        // We don't need to handle accuracy changes for this example
+    override fun onAccuracyChanged(p0: Sensor?, p1: Int) {
+        // No implementation needed for this example
     }
+
+
+    private fun saveExtremeEvent(status: String) {
+        val fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+
+        // Fetch the current location
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+                if (location != null) {
+                    val latitude = location.latitude
+                    val longitude = location.longitude
+
+                    // Convert latitude and longitude to a readable location name
+                    val geocoder = Geocoder(this)
+                    val addressList = geocoder.getFromLocation(latitude, longitude, 1)
+                    val locationName = if (!addressList.isNullOrEmpty()) {
+                        addressList[0].getAddressLine(0)
+                    } else {
+                        "Unknown Location"
+                    }
+
+                    val event = ExtremeEventEntity(
+                        location = locationName,
+                        status = status,
+                        timestamp = System.currentTimeMillis()
+                    )
+
+                    // Save the event in the database
+                    Thread {
+                        val database = AppDatabase.getInstance(applicationContext)
+                        database.extremeEventDao().insert(event)
+                        Log.d("SensorsActivity", "Extreme event saved: $event")
+
+                        // Save the event to Firebase
+                        saveExtremeEventToFirebase(event)
+                    }.start()
+                } else {
+                    Toast.makeText(this, "Unable to get location for the event.", Toast.LENGTH_SHORT).show()
+                }
+            }
+        } else {
+            Toast.makeText(this, "Location permission not granted.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun saveExtremeEventToFirebase(event: ExtremeEventEntity) {
+        val firestore = FirebaseFirestore.getInstance()
+        firestore.collection("extreme_events")
+            .add(event)
+            .addOnSuccessListener {
+                Log.d("Firebase", "Extreme event sent to Firebase: $event")
+            }
+            .addOnFailureListener { e ->
+                Log.e("Firebase", "Failed to send extreme event to Firebase: ${e.message}", e)
+            }
+    }
+
+
 
     private fun requestAudioPermission() {
         if (!hasAudioPermission()) {
@@ -183,6 +250,7 @@ class SensorsActivity : AppCompatActivity(), SensorEventListener {
             // Opozorilo pri visoki ravni hrupa (npr. nad 85 dB)
             if (decibels > 85) {
                 Toast.makeText(this, "Visoka raven hrupa zaznana! Poiščite tišjo lokacijo.", Toast.LENGTH_LONG).show()
+                saveExtremeEvent("Močan zvok")
             }
 
             // Posodobitev vsakih 1 sekundo

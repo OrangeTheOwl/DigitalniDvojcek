@@ -1,4 +1,4 @@
-/*import android.util.Log
+package com.example.airportmobile.database/*import android.util.Log
 import com.mongodb.ConnectionString
 import com.mongodb.MongoClientSettings
 import com.mongodb.ServerApi
@@ -135,6 +135,9 @@ class MongoDBConnection {
     }
 }
 */
+/*
+package com.example.airportmobile.database
+
 import android.util.Log
 import com.mongodb.MongoClientSettings
 import com.mongodb.ServerApi
@@ -187,6 +190,7 @@ class MongoDBConnection {
         }
     }
 }
+*/
 
 
 

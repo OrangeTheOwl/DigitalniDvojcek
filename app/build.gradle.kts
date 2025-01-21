@@ -2,10 +2,18 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
-    id("com.google.gms.google-services") version "4.3.15" apply false
+    id("com.google.gms.google-services") version "4.4.2" apply false
+    id("kotlin-kapt")
 }
 
+apply(plugin = "com.google.gms.google-services")
+
 android {
+
+    kapt {
+        correctErrorTypes = true
+    }
+
     namespace = "com.example.airportmobile"
     compileSdk = 35
 
@@ -61,9 +69,11 @@ android {
 
 dependencies {
     // Firebase knjižnice
-    implementation("com.google.firebase:firebase-database-ktx:20.2.0")
-    implementation("com.google.firebase:firebase-analytics-ktx:21.3.0")
-    implementation("com.google.firebase:firebase-messaging:24.1.0")
+    implementation(platform("com.google.firebase:firebase-bom:32.1.1"))
+    implementation("com.google.firebase:firebase-database-ktx")
+    implementation("com.google.firebase:firebase-analytics-ktx")
+    implementation("com.google.firebase:firebase-messaging")
+    implementation("com.google.firebase:firebase-firestore-ktx")
 
     // Osnovne knjižnice
     implementation(libs.androidx.core.ktx)
@@ -85,11 +95,6 @@ dependencies {
     implementation("org.apache.commons:commons-io:1.3.2")
     implementation("com.squareup.picasso:picasso:2.71828")
 
-    // MongoDB
-    implementation("org.mongodb:mongodb-driver-kotlin-coroutine:5.3.0")
-    implementation("org.mongodb:mongodb-driver-sync:4.10.0")
-    implementation("org.mongodb:bson-kotlin:5.3.0")
-
     // Kotlin korutine in reaktivni tokovi
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactive:1.7.3")
@@ -110,4 +115,13 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    // Room baza
+    implementation("androidx.room:room-runtime:2.5.1")
+    implementation("androidx.room:room-ktx:2.5.1")
+    kapt("androidx.room:room-compiler:2.5.1")
+
+    // Networking z OkHttp
+    implementation("com.squareup.okhttp3:okhttp:4.10.0")
 }
+

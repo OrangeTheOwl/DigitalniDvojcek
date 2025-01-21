@@ -168,13 +168,16 @@ import android.util.Log
 import android.widget.ProgressBar
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import com.example.airportmobile.database.AppDatabase
+import com.example.airportmobile.database.TestDataEntity
 import com.example.airportmobile.databinding.ActivityAlldataBinding
-import org.bson.Document
-import org.json.JSONArray
+import kotlinx.coroutines.launch
 import java.time.Instant
 
 class AllDataActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAlldataBinding
+    private lateinit var database: AppDatabase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -184,43 +187,58 @@ class AllDataActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
-        // Vedno preberi podatke iz JSON datoteke
-        fetchDataFromJson()
+        database = AppDatabase.getInstance(applicationContext)
+
+        fetchDataFromDatabase()
     }
 
-    private fun fetchDataFromJson() {
-        try {
-            val data = loadTestData() // Preberi podatke iz JSON datoteke
-            if (data.isNotEmpty()) {
-                // Posodobimo UI na podlagi pridobljenih podatkov
-                updateUI(data)
-            } else {
-                Log.d("AllDataActivity", "DATABASE data: !!! No data found in JSON file.!!!")
-                resetUI()
+    private fun fetchDataFromDatabase() {
+        Thread {
+            try {
+                val data = database.testDataDao().getAll()
+                if (data.isNotEmpty()) {
+                    runOnUiThread {
+                        updateUI(data)
+                    }
+                } else {
+                    Log.d("AllDataActivity", "No data found in the database.")
+                    runOnUiThread {
+                        resetUI()
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e("AllDataActivity", "Napaka pri pridobivanju podatkov iz baze", e)
+                runOnUiThread {
+                    resetUI()
+                }
             }
-        } catch (e: Exception) {
-            Log.e("AllDataActivity", "Napaka pri pridobivanju podatkov iz JSON datoteke", e)
-            resetUI()
-        }
+        }.start()
     }
 
-    private fun updateUI(data: List<Document>) {
+    private fun updateUI(data: List<TestDataEntity>) {
         try {
             // Izpiši vse pridobljene podatke v Logcat
-            data.forEach { document ->
-                Log.d("AllDataActivity", "Document: $document")
+            data.forEach { entity ->
+                Log.d("AllDataActivity", "Entity: $entity")
             }
 
             // Funkcija za izračun povprečja in pridobitev zadnjega zapisa
             fun calculateStats(locationId: String): Pair<Int, Int> {
-                val filteredData = data.filter { it.getString("locationId") == locationId }
+                val filteredData = data.filter { it.locationId == locationId }
                 if (filteredData.isEmpty()) return Pair(0, 0)
 
-                val average = filteredData.mapNotNull { it.getInteger("crowdNumber") }.average().toInt()
+                val average = filteredData.map { it.crowdNumber }.average().toInt()
+
+                // Posodobimo logiko za pridobitev zadnjega zapisa
                 val latest = filteredData.maxByOrNull {
-                    val timestamp = it.getString("timestamp") ?: "1970-01-01T00:00:00Z"
-                    Instant.parse(timestamp).toEpochMilli()
-                }?.getInteger("crowdNumber") ?: 0
+                    try {
+                        // Poskusimo pretvoriti časovni žig kot ISO 8601
+                        Instant.parse(it.timestamp).toEpochMilli()
+                    } catch (e: Exception) {
+                        // Če ne uspe, pretvorimo kot dolgi časovni žig
+                        it.timestamp.toLongOrNull() ?: 0L
+                    }
+                }?.crowdNumber ?: 0
 
                 return Pair(average, latest)
             }
@@ -254,22 +272,11 @@ class AllDataActivity : AppCompatActivity() {
         animateProgressBar(binding.progressBarZagreb, 0)
         animateProgressBar(binding.progressBarBratislava, 0)
         animateProgressBar(binding.progressBarDunaj, 0)
-    }
 
-    private fun loadTestData(): List<Document> {
-        val result = mutableListOf<Document>()
-        try {
-            val jsonString = assets.open("crowdData.json").bufferedReader().use { it.readText() }
-            val jsonArray = JSONArray(jsonString)
-
-            for (i in 0 until jsonArray.length()) {
-                val jsonObject = jsonArray.getJSONObject(i)
-                result.add(Document.parse(jsonObject.toString()))
-            }
-        } catch (e: Exception) {
-            Log.e("AllDataActivity", "Napaka pri branju JSON datoteke", e)
-        }
-        return result
+        binding.textView14.text = "0"
+        binding.textView12.text = "0"
+        binding.textView10.text = "0"
+        binding.textView16.text = "0"
     }
 
     // Funkcija za animacijo ProgressBar
@@ -280,6 +287,7 @@ class AllDataActivity : AppCompatActivity() {
         }
     }
 }
+
 
 
 

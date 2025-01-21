@@ -1,4 +1,4 @@
-package com.example.airportmobile.database;
+/*package com.example.airportmobile.database;
 
 import android.util.Log;
 import com.mongodb.ConnectionString;
@@ -60,4 +60,4 @@ public class MongoDBConnectionJava {
             mongoClient.close();
         }
     }
-}
+}*/

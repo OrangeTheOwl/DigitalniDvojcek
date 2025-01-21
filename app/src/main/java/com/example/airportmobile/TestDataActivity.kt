@@ -1,6 +1,7 @@
-/*package com.example.airportmobile
+package com.example.airportmobile
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,194 +11,117 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.airportmobile.database.AppDatabase
+import com.example.airportmobile.database.TestDataAdapter
+import com.example.airportmobile.database.TestDataEntity
 import com.google.firebase.FirebaseApp
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
-import org.json.JSONObject
+import com.google.firebase.firestore.FirebaseFirestore
+import java.util.concurrent.Executors
 
 class TestDataActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var generateDataButton: Button
     private lateinit var sendDataButton: Button
-    private lateinit var testData: MutableList<JSONObject>
+    private lateinit var testData: MutableList<TestDataEntity>
     private lateinit var adapter: TestDataAdapter
-
-    // Firebase Database Reference
-    private lateinit var database: DatabaseReference
+    private lateinit var database: AppDatabase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_test_data)
 
-        // Inicializirajte Firebase
-        FirebaseApp.initializeApp(this)
+        if (FirebaseApp.getApps(this).isEmpty()) {
+            FirebaseApp.initializeApp(this)
+        }
 
-        // Pridobite referenco na Firebase Realtime Database
-        database = FirebaseDatabase.getInstance().getReference("testData")
+        // Inicializacija Room baze
+        database = AppDatabase.getInstance(applicationContext)
 
-        // Inicializacija RecyclerView in ostalih komponent
+        // Inicializacija pogledov
         recyclerView = findViewById(R.id.recyclerViewTestData)
         generateDataButton = findViewById(R.id.buttonGenerateData)
+        sendDataButton = findViewById(R.id.buttonSendData)
 
-        // Inicializirajte podatke in adapter
+        // Inicializacija RecyclerView in adapterja
         testData = mutableListOf()
         adapter = TestDataAdapter(testData)
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
 
-        // Dogodek za generiranje testnih podatkov
+        // Dogodek za gumb Generate Data
         generateDataButton.setOnClickListener {
             generateTestData()
         }
+
+        // Dogodek za gumb Send Data
+        sendDataButton.setOnClickListener {
+            sendTestDataToRoom()
+        }
     }
 
-
     private fun generateTestData() {
-        // Predefined locations
         val locations = listOf("Ljubljana", "Zagreb", "Bratislava", "Dunaj")
+        val locationIds = listOf(
+            "6656ef9d83f28aa76711bac3",
+            "6666380c3d42466311c12b38",
+            "3e98a06d5b712c31e089d703",
+            "57503365c6efe496958d246d"
+        )
 
-        // Clear existing data
         testData.clear()
 
         // Generate 10 random data entries
         for (i in 1..10) {
-            val jsonObject = JSONObject().apply {
-                put("locationName", locations.random()) // Random location
-                put("crowdNumber", (0..1000).random()) // Random crowd number
-                put("timestamp", System.currentTimeMillis()) // Current timestamp
-            }
-            testData.add(jsonObject)
-        }
-
-        // Notify adapter about data changes
-        adapter.notifyDataSetChanged()
-        Toast.makeText(this, "Test data generated!", Toast.LENGTH_SHORT).show()
-    }
-
-    private fun sendTestDataToFirebase() {
-        for (item in testData) {
-            val firebaseEntry = mapOf(
-                "locationName" to item.optString("locationName"),
-                "crowdNumber" to item.optInt("crowdNumber"),
-                "timestamp" to item.optLong("timestamp")
+            val index = (locations.indices).random()
+            val testDataEntity = TestDataEntity(
+                locationId = locationIds[index],
+                locationName = locations[index],
+                crowdNumber = (0..1000).random(),
+                timestamp = System.currentTimeMillis().toString()
             )
-
-            // Push each item to Firebase under a unique key
-            database.push().setValue(firebaseEntry)
-                .addOnSuccessListener {
-                    Toast.makeText(this, "Data sent to Firebase successfully!", Toast.LENGTH_SHORT).show()
-                }
-                .addOnFailureListener { e ->
-                    Toast.makeText(this, "Failed to send data: ${e.message}", Toast.LENGTH_SHORT).show()
-                }
-        }
-    }
-}
-
-class TestDataAdapter(private val data: List<JSONObject>) : RecyclerView.Adapter<TestDataAdapter.TestDataViewHolder>() {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TestDataViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_event, parent, false)
-        return TestDataViewHolder(view)
-    }
-
-    override fun onBindViewHolder(holder: TestDataViewHolder, position: Int) {
-        val item = data[position]
-        holder.location.text = "Location: ${item.optString("locationName")}" // Use optString to prevent crashes
-        holder.crowdNumber.text = "Crowd: ${item.optInt("crowdNumber")}" // Use optInt for safety
-        holder.timestamp.text = "Timestamp: ${item.optLong("timestamp")}" // Use optLong for safety
-    }
-
-    override fun getItemCount(): Int = data.size
-
-    class TestDataViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val location: TextView = itemView.findViewById(R.id.textViewLocation)
-        val crowdNumber: TextView = itemView.findViewById(R.id.textViewCrowdNumber)
-        val timestamp: TextView = itemView.findViewById(R.id.textViewTimestamp)
-    }
-}
- */
-
-package com.example.airportmobile
-
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import org.json.JSONObject
-
-class TestDataActivity : AppCompatActivity() {
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var generateDataButton: Button
-    private lateinit var testData: MutableList<JSONObject>
-    private lateinit var adapter: TestDataAdapter
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_test_data)
-
-        // Initialize views
-        recyclerView = findViewById(R.id.recyclerViewTestData)
-        generateDataButton = findViewById(R.id.buttonGenerateData)
-
-        // Initialize RecyclerView and Adapter
-        testData = mutableListOf()
-        adapter = TestDataAdapter(testData)
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = adapter
-
-        // Set button click listener
-        generateDataButton.setOnClickListener {
-            generateTestData()
-        }
-    }
-
-    private fun generateTestData() {
-        // Predefined locations
-        val locations = listOf("Ljubljana", "Zagreb", "Bratislava", "Dunaj")
-
-        // Clear existing data
-        testData.clear()
-
-        // Generate 10 random data entries
-        for (i in 1..10) {
-            val jsonObject = JSONObject().apply {
-                put("locationName", locations.random()) // Random location
-                put("crowdNumber", (0..1000).random()) // Random crowd number
-                put("timestamp", System.currentTimeMillis()) // Current timestamp
-            }
-            testData.add(jsonObject)
+            testData.add(testDataEntity)
         }
 
-        // Notify adapter about data changes
         adapter.notifyDataSetChanged()
         Toast.makeText(this, "Test data generated!", Toast.LENGTH_SHORT).show()
     }
-}
 
-class TestDataAdapter(private val data: List<JSONObject>) : RecyclerView.Adapter<TestDataAdapter.TestDataViewHolder>() {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TestDataViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_event, parent, false)
-        return TestDataViewHolder(view)
-    }
+    private fun sendTestDataToRoom() {
+        val firestore = FirebaseFirestore.getInstance()
 
-    override fun onBindViewHolder(holder: TestDataViewHolder, position: Int) {
-        val item = data[position]
-        holder.location.text = "Location: ${item.optString("locationName")}" // Use optString to prevent crashes
-        holder.crowdNumber.text = "Crowd: ${item.optInt("crowdNumber")}" // Use optInt for safety
-        holder.timestamp.text = "Timestamp: ${item.optLong("timestamp")}" // Use optLong for safety
-    }
+        Executors.newSingleThreadExecutor().execute {
+            try {
+                // Save to Room database
+                database.testDataDao().insertAll(*testData.toTypedArray())
 
-    override fun getItemCount(): Int = data.size
+                // Save to Firebase Firestore
+                for (data in testData) {
+                    firestore.collection("test_data")
+                        .add(data)
+                        .addOnSuccessListener {
+                            Log.d("Firebase", "Data sent to Firebase: $data")
+                        }
+                        .addOnFailureListener { e ->
+                            Log.e("Firebase", "Failed to send data to Firebase: ${e.message}", e)
+                        }
+                }
 
-    class TestDataViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val location: TextView = itemView.findViewById(R.id.textViewLocation)
-        val crowdNumber: TextView = itemView.findViewById(R.id.textViewCrowdNumber)
-        val timestamp: TextView = itemView.findViewById(R.id.textViewTimestamp)
+                runOnUiThread {
+                    Toast.makeText(
+                        this@TestDataActivity,
+                        "Data sent to Room database and Firebase successfully!",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            } catch (e: Exception) {
+                runOnUiThread {
+                    Toast.makeText(
+                        this@TestDataActivity,
+                        "Failed to send data: ${e.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        }
     }
 }

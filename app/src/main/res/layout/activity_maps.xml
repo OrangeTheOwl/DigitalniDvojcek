@@ -76,12 +76,12 @@
             android:layout_weight="1"
             android:text="My Location" />
 
-        <!-- Gumb za vrnitev na domačo stran -->
+        <!-- Gumb za nastavitve -->
         <Button
-            android:id="@+id/buttonHome"
+            android:id="@+id/buttonSettings"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Home" />
+            android:text="Settings" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

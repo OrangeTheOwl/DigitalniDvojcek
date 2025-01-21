@@ -23,12 +23,11 @@ import androidx.camera.view.PreviewView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import com.example.airportmobile.database.AppDatabase
+import com.example.airportmobile.database.TestDataEntity
 import com.example.airportmobile.databinding.ActivityAddphotoBinding
-import org.json.JSONArray
-import org.json.JSONObject
+import com.google.firebase.firestore.FirebaseFirestore
 import java.io.File
-import java.io.FileOutputStream
-import java.io.OutputStreamWriter
 import java.util.*
 
 class AddPhotoActivity : AppCompatActivity() {
@@ -41,6 +40,7 @@ class AddPhotoActivity : AppCompatActivity() {
     private val handler = Handler(Looper.getMainLooper())
     private var isPostingContinuously = false
     private var isBackCamera = true
+    private lateinit var database: AppDatabase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,6 +48,8 @@ class AddPhotoActivity : AppCompatActivity() {
         binding = ActivityAddphotoBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+
+        database = AppDatabase.getInstance(applicationContext)
 
         previewView = binding.previewView
         binding.buttonOpenCamera.isEnabled = true
@@ -114,8 +116,8 @@ class AddPhotoActivity : AppCompatActivity() {
         binding.buttonPost.setOnClickListener {
             if (selectedLocation != null) {
                 if (selectedFrequency == "No Frequency") {
-                    addNewEntryToJson(selectedLocation!!)
-                    Toast.makeText(this, "New entry added to JSON file", Toast.LENGTH_SHORT).show()
+                    addNewEntry(selectedLocation!!)
+                    Toast.makeText(this, "New entry added to Room database", Toast.LENGTH_SHORT).show()
                 } else {
                     startContinuousPosting()
                 }
@@ -162,8 +164,8 @@ class AddPhotoActivity : AppCompatActivity() {
         handler.post(object : Runnable {
             override fun run() {
                 if (isPostingContinuously && selectedLocation != null) {
-                    addNewEntryToJson(selectedLocation!!)
-                    Toast.makeText(this@AddPhotoActivity, "New entry added to JSON file", Toast.LENGTH_SHORT).show()
+                    addNewEntry(selectedLocation!!)
+                    Toast.makeText(this@AddPhotoActivity, "New entry added to Room database", Toast.LENGTH_SHORT).show()
                     handler.postDelayed(this, interval)
                 }
             }
@@ -254,31 +256,57 @@ class AddPhotoActivity : AppCompatActivity() {
         }
     }
 
-    private fun addNewEntryToJson(location: String) {
+    private fun addNewEntry(location: String) {
+        val locationIds = listOf(
+            "6656ef9d83f28aa76711bac3",
+            "6666380c3d42466311c12b38",
+            "3e98a06d5b712c31e089d703",
+            "57503365c6efe496958d246d"
+        )
+
         try {
-            val assetManager = assets
-            val jsonString = assetManager.open("crowdData.json").bufferedReader().use { it.readText() }
-            val jsonArray = JSONArray(jsonString)
+            // Ustvari nov vnos
+            val newEntry = TestDataEntity(
+                locationId = locationIds.random(),
+                locationName = location,
+                crowdNumber = (0..1000).random(),
+                timestamp = System.currentTimeMillis().toString()
+            )
 
-            // Create a new entry
-            val newEntry = JSONObject()
-            newEntry.put("locationName", location)
-            newEntry.put("crowdNumber", (0..1000).random())
-            newEntry.put("timestamp", System.currentTimeMillis())
+            // Shrani v Room bazo
+            Thread {
+                database.testDataDao().insertAll(newEntry)
+                Log.d("RoomDatabase", "New entry added to Room: $newEntry")
+            }.start()
 
-            jsonArray.put(newEntry)
-
-            // Write back to the file
-            val file = File(filesDir, "crowdData.json")
-            val fos = FileOutputStream(file)
-            val writer = OutputStreamWriter(fos)
-            writer.write(jsonArray.toString())
-            writer.close()
-            fos.close()
-
-            Log.d("JSONUpdate", "New entry added: $newEntry to $filesDir")
+            // Pošlji v Firebase Firestore
+            val firestore = FirebaseFirestore.getInstance()
+            firestore.collection("test_data")
+                .add(newEntry)
+                .addOnSuccessListener {
+                    Log.d("Firebase", "New entry added to Firebase: $newEntry")
+                    runOnUiThread {
+                        Toast.makeText(
+                            this,
+                            "New entry added to Room and Firebase!",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+                .addOnFailureListener { e ->
+                    Log.e("Firebase", "Failed to send data to Firebase: ${e.message}", e)
+                    runOnUiThread {
+                        Toast.makeText(
+                            this,
+                            "Failed to send data to Firebase",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
         } catch (e: Exception) {
-            Log.e("JSONError", "Error updating JSON file", e)
+            Log.e("AddEntryError", "Error adding entry: ${e.message}", e)
+            Toast.makeText(this, "Error adding entry", Toast.LENGTH_SHORT).show()
         }
     }
+
 }
