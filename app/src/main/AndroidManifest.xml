@@ -11,6 +11,8 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.BODY_SENSORS" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
 
     <!-- Application -->
     <application
@@ -23,6 +25,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AirportMobile"
+        android:networkSecurityConfig="@xml/network_security_config"
         tools:targetApi="31">
 
         <!-- Maps API Key -->
@@ -47,7 +50,6 @@
             tools:replace="android:exported"
             android:exported="true" />
 
-        <!-- Other Activities -->
         <activity android:name=".MapsActivity" android:exported="false" android:label="@string/title_activity_maps" />
         <activity android:name=".AddPhotoActivity" android:exported="true" />
         <activity android:name=".AllDataActivity" android:exported="true" />

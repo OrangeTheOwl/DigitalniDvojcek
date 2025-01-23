@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
-        // Inicializiraj bazo
+        // Inicializiraj interno bazo
         database = AppDatabase.getInstance(applicationContext)
 
         // Inicializiraj podatke
@@ -67,7 +67,6 @@ class MainActivity : AppCompatActivity() {
             }
         }.start()
 
-        // Gumbi za navigacijo
         binding.buttonGoToPhoto.setOnClickListener {
             startActivity(
                 Intent(

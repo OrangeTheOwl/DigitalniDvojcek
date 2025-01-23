@@ -10,7 +10,7 @@ class ApiService {
     private val client = OkHttpClient()
 
     fun sendTestDataToApi(testData: List<TestDataEntity>) {
-        val url = "https://your-api-endpoint.com/submit-test-data" // Zamenjaj z API URL
+        val url = "https://your-api-endpoint.com/submit-test-data"
 
         val jsonArray = JSONArray()
         testData.forEach { data ->

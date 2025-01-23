@@ -41,17 +41,14 @@ class SensorsActivity : AppCompatActivity(), SensorEventListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sensors)
 
-        // Initialize TextViews
         lightTextView = findViewById(R.id.textViewLight)
         accelerometerTextView = findViewById(R.id.textViewAccelerometer)
         microphoneTextView = findViewById(R.id.textViewMicrophone)
 
-        // Initialize SensorManager
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT)
         accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
 
-        // Request audio permission for microphone
         requestAudioPermission()
     }
 
@@ -107,6 +104,7 @@ class SensorsActivity : AppCompatActivity(), SensorEventListener {
                         turbulenceStartTime = System.currentTimeMillis()
                     } else {
                         val currentTime = System.currentTimeMillis()
+                        // Opozorilo za turbolenco
                         if (currentTime - turbulenceStartTime >= 3000) {
                             Toast.makeText(this, "Zaznana turbulenca! Prosim, ostanite varni.", Toast.LENGTH_LONG).show()
                             turbulenceStartTime = currentTime
@@ -129,7 +127,6 @@ class SensorsActivity : AppCompatActivity(), SensorEventListener {
     private fun saveExtremeEvent(status: String) {
         val fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
-        // Fetch the current location
         if (ContextCompat.checkSelfPermission(
                 this,
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -140,7 +137,6 @@ class SensorsActivity : AppCompatActivity(), SensorEventListener {
                     val latitude = location.latitude
                     val longitude = location.longitude
 
-                    // Convert latitude and longitude to a readable location name
                     val geocoder = Geocoder(this)
                     val addressList = geocoder.getFromLocation(latitude, longitude, 1)
                     val locationName = if (!addressList.isNullOrEmpty()) {
@@ -155,13 +151,11 @@ class SensorsActivity : AppCompatActivity(), SensorEventListener {
                         timestamp = System.currentTimeMillis()
                     )
 
-                    // Save the event in the database
                     Thread {
                         val database = AppDatabase.getInstance(applicationContext)
                         database.extremeEventDao().insert(event)
                         Log.d("SensorsActivity", "Extreme event saved: $event")
 
-                        // Save the event to Firebase
                         saveExtremeEventToFirebase(event)
                     }.start()
                 } else {
@@ -253,7 +247,7 @@ class SensorsActivity : AppCompatActivity(), SensorEventListener {
                 saveExtremeEvent("Močan zvok")
             }
 
-            // Posodobitev vsakih 1 sekundo
+            // Posodobitev vsako sekundo
             microphoneTextView.postDelayed({ updateMicrophone() }, 1000)
         } catch (e: Exception) {
             Log.e("SensorsActivity", "Error updating microphone", e)

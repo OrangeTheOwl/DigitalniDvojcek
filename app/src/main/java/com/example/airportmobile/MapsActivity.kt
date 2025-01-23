@@ -176,7 +176,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                             markers.add(mapMarker)
                         }
                     }
-                    // Store markers in the map after all are added
+
                     runOnUiThread {
                         markersMap["airport"] = markers
                         updateMarkerVisibility()
@@ -216,7 +216,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                     }
                 }
 
-                // Store markers in the map after all are added
                 runOnUiThread {
                     markersMap["traffic"] = markers
                     updateMarkerVisibility()
@@ -307,7 +306,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 )
                 database.customMarkerDao().insert(marker)
 
-                // Pošlji podatke na Firebase
                 saveMarkerToFirebase(marker)
 
                 runOnUiThread {
@@ -349,7 +347,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                     val marker = document.toObject(CustomMarkerEntity::class.java)
                     val latLng = LatLng(marker.latitude, marker.longitude)
 
-                    // Dodaj marker na zemljevid
                     val mapMarker = mMap.addMarker(
                         MarkerOptions()
                             .position(latLng)
@@ -360,7 +357,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                         markers.add(mapMarker)
                     }
                 }
-                // Shranimo markerje v mapo in posodobimo vidljivost
+
                 markersMap["custom"] = markers
                 updateMarkerVisibility()
             }
@@ -393,7 +390,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                     }
                 }
 
-                // Store markers in the map after all are added
                 runOnUiThread {
                     markersMap["extreme"] = markers
                     updateMarkerVisibility()

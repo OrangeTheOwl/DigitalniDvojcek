@@ -75,7 +75,6 @@ dependencies {
     implementation("com.google.firebase:firebase-messaging")
     implementation("com.google.firebase:firebase-firestore-ktx")
 
-    // Osnovne knjižnice
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -95,23 +94,12 @@ dependencies {
     implementation("org.apache.commons:commons-io:1.3.2")
     implementation("com.squareup.picasso:picasso:2.71828")
 
-    // Kotlin korutine in reaktivni tokovi
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactive:1.7.3")
-
-    // Kotlin Reflection
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.8.22")
-
-    // Podpora za desugaring
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.3")
-
-    // Reactor Core
     implementation("io.projectreactor:reactor-core:3.5.8")
-
-    // DNS podpora
     implementation("dnsjava:dnsjava:3.4.1")
-
-    // Testiranje
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

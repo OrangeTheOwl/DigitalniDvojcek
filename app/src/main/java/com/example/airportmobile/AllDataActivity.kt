@@ -217,7 +217,6 @@ class AllDataActivity : AppCompatActivity() {
 
     private fun updateUI(data: List<TestDataEntity>) {
         try {
-            // Izpiši vse pridobljene podatke v Logcat
             data.forEach { entity ->
                 Log.d("AllDataActivity", "Entity: $entity")
             }
@@ -229,13 +228,10 @@ class AllDataActivity : AppCompatActivity() {
 
                 val average = filteredData.map { it.crowdNumber }.average().toInt()
 
-                // Posodobimo logiko za pridobitev zadnjega zapisa
                 val latest = filteredData.maxByOrNull {
                     try {
-                        // Poskusimo pretvoriti časovni žig kot ISO 8601
                         Instant.parse(it.timestamp).toEpochMilli()
                     } catch (e: Exception) {
-                        // Če ne uspe, pretvorimo kot dolgi časovni žig
                         it.timestamp.toLongOrNull() ?: 0L
                     }
                 }?.crowdNumber ?: 0
@@ -279,10 +275,9 @@ class AllDataActivity : AppCompatActivity() {
         binding.textView16.text = "0"
     }
 
-    // Funkcija za animacijo ProgressBar
     private fun animateProgressBar(progressBar: ProgressBar, targetValue: Int) {
         ObjectAnimator.ofInt(progressBar, "progress", progressBar.progress, targetValue).apply {
-            duration = 800 // Trajanje animacije: 800 ms
+            duration = 800
             start()
         }
     }

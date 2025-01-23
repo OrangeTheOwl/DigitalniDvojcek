@@ -37,23 +37,19 @@ class TestDataActivity : AppCompatActivity() {
         // Inicializacija Room baze
         database = AppDatabase.getInstance(applicationContext)
 
-        // Inicializacija pogledov
         recyclerView = findViewById(R.id.recyclerViewTestData)
         generateDataButton = findViewById(R.id.buttonGenerateData)
         sendDataButton = findViewById(R.id.buttonSendData)
 
-        // Inicializacija RecyclerView in adapterja
         testData = mutableListOf()
         adapter = TestDataAdapter(testData)
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
 
-        // Dogodek za gumb Generate Data
         generateDataButton.setOnClickListener {
             generateTestData()
         }
 
-        // Dogodek za gumb Send Data
         sendDataButton.setOnClickListener {
             sendTestDataToRoom()
         }
@@ -70,7 +66,7 @@ class TestDataActivity : AppCompatActivity() {
 
         testData.clear()
 
-        // Generate 10 random data entries
+        // Generiramo 10 primerov podatkov
         for (i in 1..10) {
             val index = (locations.indices).random()
             val testDataEntity = TestDataEntity(
